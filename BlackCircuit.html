@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlackCircuit PJS 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Share+Tech&display=swap');
+
+/*
+=====================================================
+  IMAGE CUSTOMIZATION — place images in same folder
+  --img-menu-bg:          url('menu_bg.jpg')
+  --img-scrapyard-bg:     url('scrapyard.jpg')
+  --img-repairdepot-bg:   url('repairdepot.jpg')
+  --img-factoryzone-bg:   url('factoryzone.jpg')
+  --img-researchlab-bg:   url('researchlab.jpg')
+  --img-corporatezone-bg: url('corporate.jpg')
+  --img-ripper:           url('ripper.png')
+  --img-magboots:         url('magboots.png')
+  --img-gaitmodules:      url('gaitmodules.png')
+  --img-grippers:         url('grippers.png')
+  --img-reacherrigs:      url('reacherrigs.png')
+  --img-chassisblock:     url('chassis.png')
+  --img-headnode:         url('headnode.png')
+  --img-logicengine:      url('logicengine.png')
+  --img-neuralnet:        url('neuralnet.png')
+  --img-robot-worker:     url('bot_worker.png')
+  --img-robot-scout:      url('bot_scout.png')
+  --img-robot-security:   url('bot_security.png')
+  --img-robot-salvager:   url('bot_salvager.png')
+  --img-robot-assembler:  url('bot_assembler.png')
+=====================================================
+*/
+
+:root {
+  --img-menu-bg:          url('');
+  --img-scrapyard-bg:     url('');
+  --img-repairdepot-bg:   url('');
+  --img-factoryzone-bg:   url('');
+  --img-researchlab-bg:   url('');
+  --img-corporatezone-bg: url('');
+  --img-ripper:           url('');
+  --img-magboots:         url('');
+  --img-gaitmodules:      url('');
+  --img-grippers:         url('');
+  --img-reacherrigs:      url('');
+  --img-chassisblock:     url('');
+  --img-headnode:         url('');
+  --img-logicengine:      url('');
+  --img-neuralnet:        url('');
+  --img-robot-worker:     url('');
+  --img-robot-scout:      url('');
+  --img-robot-security:   url('');
+  --img-robot-salvager:   url('');
+  --img-robot-assembler:  url('');
+
+  /* COLORS — 100% opaque */
+  --bg:        #050a05;
+  --bg2:       #080f08;
+  --bg3:       #0d160d;
+  --panel:     #0a120a;
+  --border:    #1e3a1e;
+  --border2:   #112211;
+
+  --green:     #00ff41;
+  --green2:    #00dd38;
+  --green3:    #009924;
+  --green-dim: #004d14;
+  --red:       #ff2244;
+  --red2:      #cc1133;
+  --yellow:    #ffd700;
+  --yellow2:   #ccac00;
+  --orange:    #ff6600;
+  --cyan:      #00e5ff;
+  --cyan2:     #00b3cc;
+  --pink:      #ff69b4;
+  --purple:    #bb88ff;
+
+  /* HIGH CONTRAST TEXT */
+  --text:      #e8ffe8;
+  --text2:     #aaddaa;
+  --text3:     #6aaa6a;
+  --text-dim:  #3a5a3a;
+
+  --font-main:    'Share Tech Mono', monospace;
+  --font-display: 'Orbitron', monospace;
+  --font-body:    'Share Tech', sans-serif;
+
+  /* BOT COLORS */
+  --col-worker:   #00ccff;
+  --col-scout:    #ffaa00;
+  --col-security: #ff4466;
+  --col-salvager: #44ff88;
+  --col-assembler:#cc88ff;
+  --col-gal:      #ff69b4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+body { color: var(--text); font-family: var(--font-main); font-size: 15px; }
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,#00000011 2px,#00000011 4px);
+  pointer-events: none; z-index: 9999;
+}
+
+#locBg {
+  position: fixed; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0.13; pointer-events: none; z-index: 0;
+}
+
+/* ===========================
+   MAIN MENU
+   =========================== */
+#mainMenu {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  width: 100vw; height: 100vh;
+  background: #050a05;
+  position: relative; overflow: hidden; z-index: 10;
+}
+#mainMenu::before {
+  content: '';
+  position: absolute; inset: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, #00ff4107 60deg, transparent 120deg);
+  animation: sweep 20s linear infinite;
+  pointer-events: none;
+}
+#mainMenu::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: var(--img-menu-bg);
+  background-size: cover; background-position: center;
+  opacity: 0.12; pointer-events: none;
+}
+@keyframes sweep { to { transform: rotate(360deg); } }
+@keyframes flicker { 0%,95%,97%,100%{opacity:1}96%{opacity:0.6} }
+
+.menu-logo {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 88px);
+  font-weight: 900; color: var(--green);
+  text-shadow: 0 0 20px #00ff41, 0 0 60px #00ff4155;
+  letter-spacing: 8px; margin-bottom: 8px;
+  animation: flicker 8s infinite;
+  position: relative; z-index: 1; text-align: center;
+}
+.menu-tagline {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 2.2vw, 26px);
+  color: var(--yellow); letter-spacing: 6px;
+  margin-bottom: 4px;
+  position: relative; z-index: 1;
+}
+.menu-credit {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.4vw, 18px);
+  color: var(--text3); letter-spacing: 4px;
+  margin-bottom: clamp(30px,5vh,70px);
+  position: relative; z-index: 1;
+}
+.menu-btn {
+  background: #0a120a; border: 1px solid var(--green3);
+  color: var(--green); font-family: var(--font-main);
+  font-size: clamp(13px, 1.2vw, 17px);
+  padding: clamp(11px,1.6vh,18px) clamp(28px,3.5vw,50px);
+  margin: 5px 0; cursor: pointer; letter-spacing: 3px;
+  width: clamp(240px, 22vw, 320px); text-align: center;
+  transition: all 0.15s; position: relative; z-index: 1;
+}
+.menu-btn:hover:not(:disabled) {
+  background: #0d200d; border-color: var(--green);
+  box-shadow: 0 0 20px #00ff4133;
+  text-shadow: 0 0 10px var(--green);
+}
+.menu-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.menu-version {
+  position: absolute; bottom: 16px; right: 20px;
+  color: var(--text-dim); font-size: 13px;
+  letter-spacing: 2px; z-index: 1;
+}
+
+/* SAVE SLOT INDICATORS on menu */
+.save-slot-status {
+  display: flex; gap: 12px; margin-bottom: 20px;
+  position: relative; z-index: 1;
+}
+.save-slot-pill {
+  font-size: 11px; font-family: var(--font-main);
+  padding: 3px 10px; letter-spacing: 1px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.save-slot-pill.has-save { border-color: var(--green3); color: var(--green2); }
+
+/* MODE SELECT */
+#modeSelect {
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  width: 100vw; height: 100vh;
+  background: #050a05; z-index: 10;
+}
+.mode-title {
+  font-family: var(--font-display);
+  font-size: clamp(15px,1.5vw,22px);
+  color: var(--green2); letter-spacing: 4px;
+  margin-bottom: clamp(20px,4vh,44px);
+}
+.mode-cards {
+  display: flex; gap: clamp(14px,2.2vw,28px);
+  flex-wrap: wrap; justify-content: center;
+  margin-bottom: 28px;
+}
+.mode-card {
+  border: 1px solid var(--green3);
+  background: #0a120a;
+  padding: clamp(20px,3vh,36px) clamp(18px,2.5vw,30px);
+  width: clamp(170px,17vw,245px);
+  cursor: pointer; transition: all 0.15s; text-align: center;
+}
+.mode-card:hover { border-color: var(--green); background: #0f1e0f; box-shadow: 0 0 24px #00ff4122; }
+.mode-card-title { font-family: var(--font-display); font-size: clamp(13px,1.2vw,17px); color: var(--green); margin-bottom: 10px; font-weight: 700; }
+.mode-card-days  { font-size: clamp(26px,3.2vw,40px); color: var(--yellow); font-family: var(--font-display); font-weight: 900; margin-bottom: 6px; }
+.mode-card-desc  { font-size: clamp(11px,0.95vw,14px); color: var(--text3); line-height: 1.7; }
+.mode-save-note  { font-size: 10px; color: var(--green3); margin-top: 6px; letter-spacing: 1px; }
+.back-btn {
+  background: #050a05; border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-main);
+  font-size: 13px; cursor: pointer; letter-spacing: 2px;
+  padding: 9px 22px;
+}
+.back-btn:hover { color: var(--green); border-color: var(--green3); }
+
+/* ===========================
+   GAME SCREEN LAYOUT
+   =========================== */
+#gameScreen {
+  display: none; flex-direction: column;
+  width: 100%; height: 100%;
+  position: relative; z-index: 1;
+}
+
+/* TOP BAR */
+#topBar {
+  height: clamp(50px,6vh,68px);
+  background: #0a120a;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 clamp(8px,1vw,16px);
+  flex-shrink: 0; z-index: 5;
+}
+.tb-logo {
+  font-family: var(--font-display);
+  font-size: clamp(11px,1.1vw,16px);
+  font-weight: 900; color: var(--green);
+  text-shadow: 0 0 8px #00ff4188;
+  letter-spacing: 2px;
+  padding-right: clamp(8px,1vw,16px);
+  border-right: 1px solid var(--border2);
+  white-space: nowrap; flex-shrink: 0;
+}
+.tb-item {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 clamp(8px,1.1vw,18px);
+  border-right: 1px solid var(--border2);
+  flex-shrink: 0;
+}
+.tb-label {
+  font-size: clamp(8px,0.65vw,11px);
+  color: var(--text3); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 1px;
+}
+.tb-value {
+  font-family: var(--font-display);
+  font-size: clamp(11px,1.05vw,15px);
+  color: var(--green); font-weight: 700;
+  letter-spacing: 1px; white-space: nowrap;
+}
+.tb-value.cash   { color: var(--yellow); }
+.tb-value.loc    { color: var(--yellow); }
+.tb-value.mode   { color: var(--cyan2); font-size: clamp(9px,0.9vw,12px); }
+.tb-spacer { flex: 1; }
+.top-action-btn {
+  background: #0a120a; border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-main);
+  font-size: clamp(9px,0.8vw,12px);
+  padding: 5px clamp(7px,0.9vw,14px);
+  cursor: pointer; letter-spacing: 1px;
+  margin-left: 6px; white-space: nowrap;
+}
+.top-action-btn:hover { border-color: var(--green3); color: var(--green); }
+
+/* MAIN CONTENT */
+#mainContent {
+  display: flex; flex: 1; overflow: hidden; position: relative;
+}
+
+/* ===========================
+   LEFT PANEL
+   =========================== */
+#leftPanel {
+  width: clamp(200px,18vw,280px);
+  background: #0a120a;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0; overflow: hidden; z-index: 2;
+}
+
+.panel-header {
+  font-size: clamp(8px,0.7vw,11px);
+  color: var(--text2); letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: clamp(7px,1vh,11px) 12px clamp(5px,0.7vh,8px);
+  border-bottom: 1px solid var(--border2);
+  background: #0a120a; flex-shrink: 0;
+  font-weight: bold;
+}
+
+/* MAP SECTION */
+#mapSection {
+  flex-shrink: 0;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border2);
+  position: relative;
+}
+#mapContainer {
+  position: relative;
+  width: 100%;
+  height: clamp(140px,16vh,200px);
+  background-image: url('Map_placeholder.png');
+  background-size: cover;
+  background-position: center;
+  background-color: #0a1a0a;
+  border: 1px solid var(--border2);
+}
+.map-node {
+  position: absolute;
+  background: #0a120a;
+  border: 1px solid var(--green3);
+  color: var(--text2);
+  font-family: var(--font-main);
+  font-size: clamp(8px,0.72vw,11px);
+  padding: 4px 7px;
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+.map-node:hover   { background: #0d1e0d; color: var(--green); border-color: var(--green); }
+.map-node.current { background: #0e200e; color: var(--green); border-color: var(--green); border-width: 2px; }
+
+/* BANKS */
+#banksSection {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.bank-block {
+  border-bottom: 1px solid var(--border2);
+  padding: clamp(7px,1vh,12px) 12px;
+  flex-shrink: 0;
+}
+.bank-block-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 3px;
+}
+.bank-block-icon { font-size: 14px; flex-shrink: 0; }
+.bank-block-name {
+  font-size: clamp(9px,0.82vw,12px);
+  color: var(--green); letter-spacing: 1px;
+  font-weight: bold;
+}
+.bank-block-slogan {
+  font-size: clamp(8px,0.7vw,10px);
+  color: var(--text3); letter-spacing: 1px;
+  margin-bottom: 4px; font-style: italic;
+}
+.bank-block-bal {
+  font-family: var(--font-display);
+  font-size: clamp(11px,1.1vw,15px);
+  color: var(--yellow); margin-bottom: 3px;
+}
+.bank-block-int { font-size: clamp(8px,0.72vw,10px); color: var(--text3); margin-bottom: 5px; }
+.bank-row { display: flex; gap: 3px; margin-bottom: 3px; }
+.bank-input {
+  flex: 1; background: #0d160d;
+  border: 1px solid var(--border);
+  color: var(--green); font-family: var(--font-main);
+  font-size: clamp(10px,0.88vw,13px);
+  padding: 4px 6px; outline: none; min-width: 0;
+}
+.bank-input:focus { border-color: var(--green3); }
+.bank-btn {
+  background: #0a120a; border: 1px solid var(--border);
+  color: var(--text2); font-family: var(--font-main);
+  font-size: clamp(8px,0.7vw,11px);
+  padding: 4px clamp(4px,0.5vw,8px);
+  cursor: pointer; transition: all 0.1s; white-space: nowrap;
+}
+.bank-btn:hover { border-color: var(--green); color: var(--green); }
+.bank-btn.out:hover { border-color: var(--red); color: var(--red); }
+
+/* MESSAGE FEED (moved into left panel below banks) */
+#msgFeedSection {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column;
+  min-height: 80px;
+}
+.feed-entry {
+  padding: 3px 10px;
+  border-bottom: 1px solid var(--border2);
+  font-size: clamp(10px,0.88vw,13px);
+  line-height: 1.5;
+  display: flex; gap: 8px;
+  flex-shrink: 0;
+}
+.feed-day    { color: var(--text-dim); min-width: 42px; font-size: clamp(9px,0.8vw,11px); flex-shrink:0; }
+.feed-text   { flex: 1; }
+.feed-text.news   { color: var(--yellow); }
+.feed-text.ripper { color: var(--red); }
+.feed-text.technecker { color: var(--orange); }
+.feed-text.deal   { color: var(--green2); }
+.feed-text.npc    { color: var(--green); }
+.feed-text.good   { color: var(--green); }
+.feed-text.bad    { color: var(--red); }
+.feed-text.flavor { color: var(--text3); }
+.feed-text.system { color: var(--text2); }
+.feed-text.daily  { color: var(--red); font-weight: bold; }
+.feed-text.scout  { color: var(--col-scout); }
+.feed-text.security-msg { color: var(--col-security); }
+.feed-text.crazy  { color: var(--purple); }
+
+/* ===========================
+   CENTER PANEL
+   =========================== */
+#centerPanel {
+  flex: 1; display: flex; flex-direction: column;
+  overflow: hidden; background: #080f08; z-index: 2;
+}
+
+/* MARKET + ASSEMBLER COMBINED HEADER */
+.market-header-row {
+  display: grid;
+  grid-template-columns: minmax(100px,1.6fr) 44px minmax(72px,1fr) 80px 60px 52px 70px 68px 1fr;
+  padding: clamp(6px,0.9vh,10px) clamp(8px,1vw,14px);
+  border-bottom: 1px solid var(--border);
+  font-size: clamp(8px,0.68vw,11px);
+  color: var(--text2); letter-spacing: 2px;
+  text-transform: uppercase;
+  background: #0a120a;
+  position: sticky; top: 0; z-index: 10;
+  align-items: center;
+}
+.market-header-row .asm-header {
+  color: var(--col-assembler);
+  font-size: clamp(8px,0.68vw,11px);
+  letter-spacing: 1px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border2);
+}
+
+#marketArea { flex: 1; overflow-y: auto; }
+
+.market-row {
+  display: grid;
+  grid-template-columns: minmax(100px,1.6fr) 44px minmax(72px,1fr) 80px 60px 52px 70px 68px 1fr;
+  padding: 0 clamp(8px,1vw,14px);
+  border-bottom: 1px solid var(--border2);
+  align-items: center;
+  min-height: clamp(40px,5vh,52px);
+  cursor: pointer; transition: background 0.08s;
+  user-select: none;
+}
+.market-row:hover    { background: #0d1e0d; }
+.market-row.selected { background: #101f10; border-left: 3px solid var(--green); padding-left: calc(clamp(8px,1vw,14px) - 3px); }
+
+.item-icon { width: 24px; height: 24px; object-fit: contain; margin-right: 6px; background: #0d160d; border: 1px solid var(--border); flex-shrink: 0; }
+.item-icon[src=""] { display: none; }
+.item-name-cell { display: flex; align-items: center; }
+.item-name { font-size: clamp(10px,0.95vw,13px); color: var(--text); }
+.item-tier-A { color: #7ab87a; }
+.item-tier-B { color: #8acc8a; }
+.item-tier-C { color: var(--text2); }
+.item-tier-D { color: #aada88; }
+.item-tier-E { color: var(--yellow2); }
+.item-tier-F { color: var(--yellow); }
+.item-tier-G { color: var(--orange); }
+.item-tier-H { color: #ffaa77; }
+
+.item-avail    { color: var(--text3); font-size: clamp(10px,0.9vw,13px); }
+.item-price    { color: var(--green); font-family: var(--font-display); font-size: clamp(10px,0.95vw,13px); }
+
+/* Inline row buttons */
+.row-btns { display: flex; gap: 3px; align-items: center; }
+.row-btn {
+  background: #0a120a; border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-main);
+  font-size: clamp(8px,0.7vw,10px);
+  padding: 2px 5px; cursor: pointer; transition: all 0.1s;
+  letter-spacing: 1px; white-space: nowrap;
+}
+.row-btn.rb-buy:hover   { border-color: var(--green);  color: var(--green); }
+.row-btn.rb-sell:hover  { border-color: var(--yellow); color: var(--yellow); }
+.row-btn.rb-asm:hover   { border-color: var(--cyan2);  color: var(--cyan2); }
+
+.item-trend    { font-size: clamp(11px,1.05vw,15px); text-align: center; font-weight: bold; }
+.item-profit   { font-size: clamp(9px,0.85vw,12px); font-weight: bold; }
+.item-profit.pos { color: var(--green); }
+.item-profit.neg { color: var(--red); }
+.item-owned    { color: var(--yellow); font-family: var(--font-display); font-size: clamp(10px,0.95vw,13px); }
+.item-avgpaid  { color: var(--text3); font-size: clamp(9px,0.82vw,11px); }
+
+/* ASSEMBLER SLOT inside row */
+.asm-cell {
+  padding-left: 8px;
+  border-left: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 5px;
+}
+.asm-slot-inline {
+  font-size: clamp(9px,0.82vw,11px);
+  color: var(--text-dim);
+  display: flex; align-items: center; gap: 4px;
+}
+.asm-slot-inline.filled { color: var(--col-assembler); }
+.asm-remove-btn {
+  background: none; border: none;
+  color: var(--red2); cursor: pointer;
+  font-size: 10px; line-height: 1; padding: 1px 3px;
+}
+.asm-remove-btn:hover { color: var(--red); }
+.asm-send-btn {
+  background: #0a120a; border: 1px solid var(--border);
+  color: var(--text-dim); font-family: var(--font-main);
+  font-size: clamp(8px,0.7vw,10px);
+  padding: 2px 5px; cursor: pointer;
+}
+.asm-send-btn:hover { border-color: var(--col-assembler); color: var(--col-assembler); }
+
+/* STATUS BAR (replaces bottom action strip) */
+#statusBar {
+  padding: clamp(6px,0.9vh,10px) clamp(8px,1vw,14px);
+  background: #0a120a; border-top: 1px solid var(--border);
+  display: flex; align-items: center;
+  flex-shrink: 0;
+}
+#statusMsg {
+  font-size: clamp(10px,0.95vw,13px);
+  color: var(--red);
+  font-family: var(--font-main);
+  letter-spacing: 1px;
+}
+
+/* ASSEMBLE BUTTON BAR */
+#assembleBar {
+  padding: clamp(5px,0.7vh,8px) clamp(8px,1vw,14px);
+  background: #0a120a; border-top: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.asm-progress-txt { font-size: clamp(9px,0.85vw,12px); color: var(--text3); }
+.assemble-main-btn {
+  background: #0a120a; border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-main);
+  font-size: clamp(9px,0.88vw,12px);
+  padding: clamp(5px,0.8vh,9px) clamp(12px,1.5vw,20px);
+  cursor: pointer; letter-spacing: 2px; transition: all 0.1s;
+}
+.assemble-main-btn.ready { border-color: var(--green); color: var(--green); }
+.assemble-main-btn.ready:hover { background: #0d1e0d; box-shadow: 0 0 12px #00ff4122; }
+.assemble-main-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ===========================
+   RIGHT PANEL — BOTS
+   =========================== */
+#rightPanel {
+  width: clamp(210px,20vw,290px);
+  background: #0a120a;
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; flex-shrink: 0; z-index: 2;
+}
+
+.bot-entry {
+  border-bottom: 1px solid var(--border2);
+  flex-shrink: 0;
+}
+.bot-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: clamp(7px,1vh,11px) 10px clamp(4px,0.6vh,7px);
+  cursor: pointer;
+}
+.bot-img { width: clamp(28px,2.8vw,40px); height: clamp(28px,2.8vw,40px); object-fit: contain; background: #0d160d; border: 1px solid var(--border); flex-shrink: 0; }
+.bot-img[src=""] { display: none; }
+.bot-icon-fb { font-size: clamp(16px,1.8vw,24px); flex-shrink: 0; width: clamp(28px,2.8vw,40px); text-align: center; }
+.bot-info    { flex: 1; min-width: 0; }
+.bot-name    { font-size: clamp(10px,0.92vw,13px); letter-spacing: 1px; font-weight: bold; }
+.bot-effect  { font-size: clamp(9px,0.8vw,11px); color: var(--text3); margin-top: 1px; }
+.bot-count   { font-family: var(--font-display); font-size: clamp(13px,1.2vw,17px); color: var(--text3); flex-shrink: 0; }
+.bot-count.act { color: var(--green); }
+
+/* BOT HEALTH BAR */
+.bot-health-bar-wrap {
+  padding: 0 10px 4px;
+}
+.bot-health-label {
+  font-size: clamp(8px,0.72vw,10px);
+  color: var(--text3); margin-bottom: 2px;
+}
+.bot-health-bar {
+  height: 5px; background: #1a2e1a;
+  border: 1px solid var(--border2);
+}
+.bot-health-fill {
+  height: 100%; background: var(--green3);
+  transition: width 0.4s;
+}
+.bot-health-fill.warn { background: var(--yellow2); }
+.bot-health-fill.crit { background: var(--red2); }
+.bot-repair-btn {
+  background: #0a120a; border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-main);
+  font-size: clamp(8px,0.72vw,10px);
+  padding: 3px 8px; cursor: pointer; margin: 3px 10px;
+  display: block; width: calc(100% - 20px);
+}
+.bot-repair-btn:hover { border-color: var(--green); color: var(--green); }
+
+/* BOT MESSAGE WINDOW */
+.bot-msg-window {
+  margin: 0 10px 6px;
+  padding: 5px 8px;
+  background: #0d160d;
+  border: 1px solid var(--border2);
+  font-size: clamp(9px,0.82vw,12px);
+  color: var(--text3);
+  min-height: 28px;
+  line-height: 1.5;
+}
+
+.sell-bot-btn {
+  background: #0a120a; border: 1px solid var(--border);
+  color: var(--yellow2); font-family: var(--font-main);
+  font-size: clamp(8px,0.72vw,10px);
+  padding: 3px 6px; cursor: pointer;
+  margin: 3px 10px; display: block; width: calc(100% - 20px);
+}
+.sell-bot-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+
+/* GAL 9000 special */
+.gal-entry {
+  border: 1px solid var(--pink);
+  background: #1a0a14;
+  margin: 6px;
+  padding: 8px;
+}
+.gal-name { color: var(--pink); font-weight: bold; font-size: clamp(10px,0.95vw,14px); letter-spacing: 1px; }
+.gal-msg  { color: var(--pink); font-size: clamp(9px,0.82vw,12px); margin-top: 4px; font-style: italic; }
+
+/* ===========================
+   MODALS
+   =========================== */
+#modalOverlay {
+  display: none; position: fixed; inset: 0;
+  background: #000000cc; z-index: 1000;
+  align-items: center; justify-content: center;
+}
+#modalOverlay.show { display: flex; }
+.modal {
+  background: #0a120a; border: 1px solid var(--green3);
+  padding: clamp(20px,2.8vh,36px) clamp(20px,2.8vw,36px);
+  min-width: clamp(300px,36vw,520px);
+  max-width: 92vw; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 0 40px #00ff4122;
+}
+.big-modal { min-width: clamp(440px,54vw,720px); }
+.modal-title {
+  font-family: var(--font-display);
+  font-size: clamp(13px,1.2vw,17px); color: var(--green);
+  letter-spacing: 2px; margin-bottom: clamp(12px,1.8vh,18px);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: clamp(7px,1vh,11px);
+}
+.modal-body { color: var(--text2); font-size: clamp(11px,1vw,14px); line-height: 1.8; margin-bottom: clamp(14px,2vh,22px); }
+
+/* BIG ITEM MODAL */
+.big-deal-icon { font-size: clamp(28px,3vw,42px); text-align: center; margin-bottom: 10px; }
+.big-item-header {
+  display: flex; align-items: center;
+  gap: clamp(12px,1.8vw,24px);
+  margin-bottom: clamp(16px,2.2vh,26px);
+  padding-bottom: clamp(12px,1.6vh,18px);
+  border-bottom: 1px solid var(--border);
+}
+.big-item-img { width: clamp(52px,5.5vw,78px); height: clamp(52px,5.5vw,78px); object-fit: contain; background: #0d160d; border: 1px solid var(--border); }
+.big-item-img[src=""] { display: none; }
+.big-item-name  { font-family: var(--font-display); font-size: clamp(16px,1.8vw,24px); color: var(--green); font-weight: 700; margin-bottom: 4px; }
+.big-item-price { font-family: var(--font-display); font-size: clamp(20px,2.2vw,30px); color: var(--yellow); font-weight: 900; }
+.big-item-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(8px,1.2vw,16px); margin-bottom: clamp(16px,2.2vh,26px); }
+.big-stat { background: #0d160d; border: 1px solid var(--border); padding: clamp(9px,1.3vh,16px) clamp(10px,1.4vw,18px); text-align: center; }
+.big-stat-label { font-size: clamp(8px,0.75vw,11px); color: var(--text3); letter-spacing: 2px; margin-bottom: 4px; }
+.big-stat-value { font-family: var(--font-display); font-size: clamp(13px,1.4vw,18px); color: var(--green); }
+.big-stat-value.yel { color: var(--yellow); }
+.big-stat-value.red { color: var(--red); }
+.big-qty-section { margin-bottom: clamp(14px,2vh,22px); }
+.big-qty-label { font-size: clamp(10px,0.9vw,13px); color: var(--text3); letter-spacing: 2px; margin-bottom: clamp(7px,1vh,11px); }
+.qty-row { display: flex; align-items: center; gap: clamp(7px,0.9vw,14px); flex-wrap: wrap; }
+.qty-input { background: #0d160d; border: 1px solid var(--border); color: var(--green); font-family: var(--font-display); font-size: clamp(16px,1.8vw,22px); padding: clamp(6px,0.9vh,10px) clamp(10px,1.2vw,16px); width: clamp(80px,8vw,110px); text-align: center; outline: none; }
+.qty-input:focus { border-color: var(--green3); }
+.qty-btn { background: #0d160d; border: 1px solid var(--border); color: var(--text2); font-family: var(--font-main); font-size: clamp(12px,1.3vw,18px); padding: clamp(6px,0.9vh,10px) clamp(10px,1.2vw,16px); cursor: pointer; }
+.qty-btn:hover { border-color: var(--green3); color: var(--green); }
+.qty-max-btn { background: #0a120a; border: 1px solid var(--border); color: var(--text3); font-family: var(--font-main); font-size: clamp(9px,0.85vw,12px); padding: clamp(5px,0.7vh,8px) clamp(10px,1.2vw,14px); cursor: pointer; letter-spacing: 1px; }
+.qty-max-btn:hover { border-color: var(--green3); color: var(--green2); }
+
+/* SALE PROFIT DISPLAY */
+.sale-profit-display {
+  font-family: var(--font-display);
+  font-size: clamp(24px,2.8vw,38px);
+  text-align: right;
+  margin: 10px 0;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+.sale-profit-display.pos { color: var(--green); }
+.sale-profit-display.neg { color: var(--red); }
+
+.big-action-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(7px,1vw,14px); margin-top: clamp(12px,1.8vh,20px); }
+.big-action-btn { background: #0a120a; border: 1px solid var(--border); color: var(--text2); font-family: var(--font-main); font-size: clamp(10px,0.95vw,14px); padding: clamp(11px,1.6vh,18px) 6px; cursor: pointer; letter-spacing: 1px; text-align: center; transition: all 0.1s; }
+.big-action-btn.buy-btn  { border-color: var(--green3); color: var(--green); }
+.big-action-btn.buy-btn:hover  { background: #0d200d; }
+.big-action-btn.sell-btn { border-color: #ccac0077; color: var(--yellow); }
+.big-action-btn.sell-btn:hover { background: #1a1500; }
+.big-action-btn.asm-btn  { border-color: #cc88ff44; color: var(--purple); }
+.big-action-btn.asm-btn:hover  { background: #12001e; }
+
+.modal-cost { font-family: var(--font-display); font-size: clamp(13px,1.4vw,18px); color: var(--yellow); margin-bottom: clamp(12px,1.8vh,18px); }
+.modal-btns { display: flex; gap: 9px; }
+.modal-confirm { background: #0a120a; border: 1px solid var(--green3); color: var(--green); font-family: var(--font-main); font-size: clamp(10px,0.95vw,14px); padding: clamp(7px,1vh,12px) clamp(16px,2vw,26px); cursor: pointer; letter-spacing: 2px; flex: 1; transition: all 0.1s; }
+.modal-confirm:hover { background: #0d1e0d; box-shadow: 0 0 12px #00ff4122; }
+.modal-confirm.danger { border-color: var(--red2); color: var(--red); }
+.modal-confirm.danger:hover { background: #1a0008; }
+.modal-cancel { background: #0a120a; border: 1px solid var(--border); color: var(--text3); font-family: var(--font-main); font-size: clamp(10px,0.95vw,14px); padding: clamp(7px,1vh,12px) clamp(16px,2vw,26px); cursor: pointer; letter-spacing: 2px; }
+.modal-cancel:hover { border-color: var(--red2); color: var(--red2); }
+
+/* DEAL */
+.deal-badge  { display: inline-block; background: #0d200d; border: 1px solid var(--green3); color: var(--green); font-size: clamp(9px,0.85vw,12px); padding: 3px 10px; letter-spacing: 2px; margin-bottom: 12px; }
+.deal-item   { font-family: var(--font-display); font-size: clamp(16px,2vw,26px); color: var(--yellow); margin-bottom: 6px; }
+.deal-price  { font-family: var(--font-display); font-size: clamp(20px,2.4vw,32px); color: var(--green); margin-bottom: 6px; }
+.deal-normal { font-size: clamp(10px,0.95vw,13px); color: var(--text3); margin-bottom: 5px; }
+.deal-flavor { font-size: clamp(10px,0.95vw,13px); color: var(--text2); font-style: italic; margin-bottom: 16px; line-height: 1.6; }
+
+/* HOLD OPTION */
+.hold-option { background: #0d160d; border: 1px solid var(--border2); padding: 12px; margin-top: 10px; }
+.hold-fee    { color: var(--yellow); font-family: var(--font-display); font-size: 16px; }
+
+/* RIPPER */
+.ripper-alert { font-family: var(--font-display); font-size: clamp(18px,2.2vw,28px); color: var(--red); text-shadow: 0 0 20px #ff224488; margin-bottom: 12px; animation: ripperpulse 0.5s infinite alternate; }
+.ripper-img   { width: 100%; max-height: clamp(110px,16vh,200px); object-fit: contain; margin-bottom: 12px; display: block; }
+.ripper-img[src=""] { display: none; }
+@keyframes ripperpulse { from{opacity:0.6}to{opacity:1} }
+
+/* TECHNECKER */
+.technecker-alert { font-family: var(--font-display); font-size: clamp(16px,2vw,24px); color: var(--orange); margin-bottom: 10px; animation: ripperpulse 0.5s infinite alternate; }
+
+/* AUCTION */
+.auction-modal { border-color: var(--yellow2); }
+.auction-title { color: var(--yellow); }
+.auction-price { font-family: var(--font-display); font-size: clamp(20px,2.4vw,32px); color: var(--yellow); }
+.auction-bids  { color: var(--orange); font-size: clamp(12px,1.1vw,16px); margin: 8px 0; }
+.auction-prog  { font-size: clamp(10px,0.95vw,13px); color: var(--text3); }
+
+/* CRAZY PRICE */
+.crazy-badge { display: inline-block; background: #1a0a2a; border: 1px solid var(--purple); color: var(--purple); font-size: clamp(9px,0.85vw,12px); padding: 3px 10px; letter-spacing: 2px; margin-bottom: 10px; animation: ripperpulse 1s infinite alternate; }
+
+/* ROLE CARDS */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 16px; }
+.role-card  { border: 1px solid var(--border); background: #0d160d; padding: clamp(9px,1.3vh,16px); cursor: pointer; transition: all 0.1s; text-align: center; }
+.role-card:hover { border-color: var(--green3); background: #0e1e0e; }
+.role-icon  { font-size: clamp(18px,2.2vw,28px); margin-bottom: 6px; }
+.role-name  { font-size: clamp(9px,0.88vw,13px); color: var(--green2); letter-spacing: 1px; margin-bottom: 4px; }
+.role-desc  { font-size: clamp(8px,0.75vw,11px); color: var(--text3); line-height: 1.5; }
+
+/* GAL 9000 MODAL */
+.gal-modal { border-color: var(--pink); }
+.gal-modal .modal-title { color: var(--pink); }
+
+/* DISCOVERY POP-UP */
+.discovery-modal { border-color: var(--cyan2); }
+.discovery-title { color: var(--cyan2); }
+
+/* DAILY REPORT */
+.daily-report-banner {
+  background: #1a0505;
+  border: 1px solid var(--red2);
+  padding: 8px 14px;
+  margin: 4px 10px;
+  font-size: clamp(10px,0.9vw,13px);
+  color: var(--red);
+  letter-spacing: 1px;
+}
+
+/* END SCREEN */
+#endScreen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100vw; height: 100vh; background: #050a05; z-index: 10; }
+.end-title  { font-family: var(--font-display); font-size: clamp(28px,4vw,52px); color: var(--green); text-shadow: 0 0 20px #00ff4166; letter-spacing: 6px; margin-bottom: 6px; }
+.end-sub    { color: var(--text3); font-size: clamp(13px,1.2vw,17px); letter-spacing: 3px; margin-bottom: clamp(26px,4.5vh,50px); }
+.end-stats  { background: #0a120a; border: 1px solid var(--green3); padding: clamp(20px,3vh,36px) clamp(28px,3.5vw,50px); min-width: clamp(280px,34vw,440px); margin-bottom: 28px; }
+.end-stat   { display: flex; justify-content: space-between; padding: clamp(7px,1vh,11px) 0; border-bottom: 1px solid var(--border2); font-size: clamp(12px,1.1vw,16px); }
+.end-stat-label { color: var(--text2); }
+.end-stat-value { color: var(--green); font-family: var(--font-display); }
+.end-stat.total .end-stat-label { color: var(--green2); font-size: clamp(14px,1.3vw,18px); }
+.end-stat.total .end-stat-value { color: var(--yellow); font-size: clamp(18px,2vw,26px); }
+.end-grade  { font-family: var(--font-display); font-size: clamp(44px,6vw,80px); color: var(--green); text-shadow: 0 0 30px #00ff4166; margin: 16px 0; text-align: center; }
+
+/* TOASTS */
+#saveToast { position: fixed; bottom: 18px; right: 18px; background: #0a120a; border: 1px solid var(--green3); color: var(--green); font-family: var(--font-main); font-size: clamp(10px,0.95vw,14px); padding: 8px 18px; letter-spacing: 2px; opacity: 0; transition: opacity 0.3s; z-index: 5000; pointer-events: none; }
+#saveToast.show { opacity: 1; }
+#notification   { position: fixed; top: clamp(58px,8vh,78px); left: 50%; transform: translateX(-50%); background: #0a120a; border: 1px solid var(--green3); color: var(--green); font-family: var(--font-main); font-size: clamp(10px,0.95vw,14px); padding: 8px 20px; letter-spacing: 2px; opacity: 0; transition: opacity 0.3s; z-index: 5000; pointer-events: none; white-space: nowrap; }
+#notification.show  { opacity: 1; }
+#notification.error { border-color: var(--red2); color: var(--red); }
+#notification.warn  { border-color: var(--yellow2); color: var(--yellow); }
+
+::-webkit-scrollbar       { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: #050a05; }
+::-webkit-scrollbar-thumb { background: #004d14; }
+::-webkit-scrollbar-thumb:hover { background: var(--green3); }
+</style>
+</head>
+<body>
+
+<div id="locBg"></div>
+<div id="saveToast">GAME SAVED</div>
+<div id="notification"></div>
+
+<!-- MAIN MENU -->
+<div id="mainMenu">
+  <div class="menu-logo">BlackCircuit</div>
+  <div class="menu-tagline">BUY. SELL. BUILD.</div>
+  <div class="menu-credit">PJS 2026</div>
+  <div class="save-slot-status">
+    <div class="save-slot-pill" id="pill30">30 DAY</div>
+    <div class="save-slot-pill" id="pill60">60 DAY</div>
+    <div class="save-slot-pill" id="pillEnd">ENDLESS</div>
+  </div>
+  <button class="menu-btn" onclick="showModeSelect()">NEW GAME</button>
+  <button class="menu-btn" id="continueBtn" disabled onclick="showContinueSelect()">CONTINUE</button>
+  <button class="menu-btn" id="deleteBtn"   disabled onclick="showDeleteSelect()">DELETE SAVE</button>
+  <button class="menu-btn" onclick="if(confirm('Exit?'))window.close()">EXIT</button>
+  <div class="menu-version">BlackCircuit PJS 2026 — v2.0</div>
+</div>
+
+<!-- MODE SELECT -->
+<div id="modeSelect">
+  <div class="mode-title">SELECT RUN LENGTH</div>
+  <div class="mode-cards">
+    <div class="mode-card" onclick="startGame(30)">
+      <div class="mode-card-title">SPRINT</div>
+      <div class="mode-card-days">30</div>
+      <div style="font-size:10px;color:var(--text3);letter-spacing:3px;margin-bottom:8px">DAYS</div>
+      <div class="mode-card-desc">High pressure. No time to waste. Trade hard or go home.</div>
+      <div class="mode-save-note" id="saveNote30"></div>
+    </div>
+    <div class="mode-card" onclick="startGame(60)">
+      <div class="mode-card-title">STANDARD</div>
+      <div class="mode-card-days">60</div>
+      <div style="font-size:10px;color:var(--text3);letter-spacing:3px;margin-bottom:8px">DAYS</div>
+      <div class="mode-card-desc">The full experience. Build robots. Exploit news. Play the long game.</div>
+      <div class="mode-save-note" id="saveNote60"></div>
+    </div>
+    <div class="mode-card" onclick="startGame(0)">
+      <div class="mode-card-title">ENDLESS</div>
+      <div class="mode-card-days">&#8734;</div>
+      <div style="font-size:10px;color:var(--text3);letter-spacing:3px;margin-bottom:8px">DAYS</div>
+      <div class="mode-card-desc">No limit. Sandbox. See how deep the circuit goes.</div>
+      <div class="mode-save-note" id="saveNoteEnd"></div>
+    </div>
+  </div>
+  <button class="back-btn" onclick="showMainMenu()">&#8592; BACK</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gameScreen">
+  <!-- TOP BAR -->
+  <div id="topBar">
+    <div class="tb-logo">BlackCircuit</div>
+    <div class="tb-item"><div class="tb-label">DAY</div><div class="tb-value" id="tbDay">1</div></div>
+    <div class="tb-item"><div class="tb-label">LOCATION</div><div class="tb-value loc" id="tbLoc">Scrap Yard</div></div>
+    <div class="tb-item"><div class="tb-label">CASH</div><div class="tb-value cash" id="tbCash">&#7580;2,000</div></div>
+    <div class="tb-item"><div class="tb-label">BANK TOTAL</div><div class="tb-value" id="tbBank">&#7580;0</div></div>
+    <div class="tb-item"><div class="tb-label">CARGO</div><div class="tb-value" id="tbInv">0/10</div></div>
+    <div class="tb-item"><div class="tb-label">GAME LENGTH</div><div class="tb-value mode" id="tbMode">60 DAYS</div></div>
+    <div class="tb-spacer"></div>
+    <button class="top-action-btn" onclick="saveGameState()">F8 SAVE</button>
+    <button class="top-action-btn" onclick="promptLoad()">F9 LOAD</button>
+    <button class="top-action-btn" onclick="showMainMenu()">MENU</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="mainContent">
+
+    <!-- LEFT PANEL: MAP + BANKS + MESSAGES -->
+    <div id="leftPanel">
+      <div class="panel-header">NAVIGATE &mdash; ENDS DAY</div>
+      <div id="mapSection">
+        <div id="mapContainer">
+          <div class="map-node" id="mn-Scrap Yard"     style="left:8%;top:70%"  onclick="travelTo('Scrap Yard')">Scrap Yard</div>
+          <div class="map-node" id="mn-Repair Depot"   style="left:10%;top:20%" onclick="travelTo('Repair Depot')">Repair Depot</div>
+          <div class="map-node" id="mn-Factory Zone"   style="left:50%;top:10%" onclick="travelTo('Factory Zone')">Factory Zone</div>
+          <div class="map-node" id="mn-Research Lab"   style="left:72%;top:55%" onclick="travelTo('Research Lab')">Research Lab</div>
+          <div class="map-node" id="mn-Corporate Zone" style="left:40%;top:65%" onclick="travelTo('Corporate Zone')">Corporate Zone</div>
+        </div>
+      </div>
+
+      <div class="panel-header" style="margin-top:0">BANKS</div>
+      <div id="banksSection">
+        <!-- NEXUS PRIME -->
+        <div class="bank-block">
+          <div class="bank-block-header">
+            <span class="bank-block-icon">&#127970;</span>
+            <span class="bank-block-name">NEXUS PRIME BANK</span>
+          </div>
+          <div class="bank-block-slogan">"Growth is a managed outcome."</div>
+          <div class="bank-block-bal" id="nexusBal">&#7580;0</div>
+          <div class="bank-block-int">+5.0%/day interest</div>
+          <div class="bank-row">
+            <input class="bank-input" id="bi-nexus" type="number" placeholder="amount" min="0">
+          </div>
+          <div class="bank-row">
+            <button class="bank-btn" onclick="bankDeposit('nexus')">+</button>
+            <button class="bank-btn" onclick="bankWithdraw('nexus')">-</button>
+            <button class="bank-btn" onclick="bankDepositAll('nexus')">ALL IN</button>
+            <button class="bank-btn out" onclick="bankWithdrawAll('nexus')">ALL OUT</button>
+          </div>
+        </div>
+        <!-- FOMO TRUST -->
+        <div class="bank-block">
+          <div class="bank-block-header">
+            <span class="bank-block-icon">&#9889;</span>
+            <span class="bank-block-name">FOMO TRUST BANK</span>
+          </div>
+          <div class="bank-block-slogan">"FOMO is not emotion. It is infrastructure."</div>
+          <div class="bank-block-bal" id="fomoBal">&#7580;0</div>
+          <div class="bank-block-int">-4.2%/day access cost</div>
+          <div class="bank-row">
+            <input class="bank-input" id="bi-fomo" type="number" placeholder="amount" min="0">
+          </div>
+          <div class="bank-row">
+            <button class="bank-btn" onclick="bankDeposit('fomo')">+</button>
+            <button class="bank-btn" onclick="bankWithdraw('fomo')">-</button>
+            <button class="bank-btn" onclick="bankDepositAll('fomo')">ALL IN</button>
+            <button class="bank-btn out" onclick="bankWithdrawAll('fomo')">ALL OUT</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-header" style="margin-top:0">INTEL FEED</div>
+      <div id="msgFeedSection"><div id="eventFeed"></div></div>
+    </div>
+
+    <!-- CENTER PANEL: MARKET + INLINE ASSEMBLER -->
+    <div id="centerPanel">
+      <div id="marketArea">
+        <div class="market-header-row">
+          <span>COMPONENT</span>
+          <span>AVAIL</span>
+          <span>PRICE</span>
+          <span style="text-align:center">BUY/SELL/ASM</span>
+          <span>TREND</span>
+          <span>PROFIT</span>
+          <span>OWNED</span>
+          <span>AVG PAID</span>
+          <span class="asm-header">ASSEMBLER</span>
+        </div>
+        <div id="marketRows"></div>
+      </div>
+      <div id="assembleBar">
+        <span class="asm-progress-txt" id="asmProgress">0 / 8 in assembler</span>
+        <button class="assemble-main-btn" id="assembleBtn" onclick="assembleRobot()" disabled>ASSEMBLE &mdash; &#7580;5,000</button>
+      </div>
+      <div id="statusBar">
+        <span id="statusMsg">Double-click any component to open full trading panel</span>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: BOTS -->
+    <div id="rightPanel">
+      <div class="panel-header">ACTIVE BOTS</div>
+      <div id="robotsPanel"></div>
+    </div>
+
+  </div><!-- end mainContent -->
+</div><!-- end gameScreen -->
+
+<!-- END SCREEN -->
+<div id="endScreen">
+  <div class="end-title">BLACKCIRCUIT</div>
+  <div class="end-sub" id="endSub">60 DAY RUN COMPLETE</div>
+  <div class="end-grade" id="endGrade">A</div>
+  <div class="end-stats" id="endStats"></div>
+  <button class="menu-btn" id="endBtn" onclick="showMainMenu()">MAIN MENU</button>
+</div>
+
+<!-- MODAL -->
+<div id="modalOverlay"><div class="modal" id="modalContent"></div></div>
+
+<script>
+/* ============================================================
+   AUDIO ENGINE — procedural tones only, no ambient loops
+   ============================================================ */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let _ctx = null;
+function getCtx(){ if(!_ctx)_ctx=new AudioCtx(); if(_ctx.state==='suspended')_ctx.resume(); return _ctx; }
+function tone(freq,type,dur,vol,delay=0){
+  try{
+    const c=getCtx(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type=type;o.frequency.setValueAtTime(freq,c.currentTime+delay);
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+dur);
+    o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+0.05);
+  }catch(e){}
+}
+function noise(dur,vol,delay=0,ffreq=800){
+  try{
+    const c=getCtx(),buf=c.createBuffer(1,c.sampleRate*dur,c.sampleRate);
+    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    const s=c.createBufferSource();s.buffer=buf;
+    const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=ffreq;f.Q.value=0.8;
+    const g=c.createGain();
+    s.connect(f);f.connect(g);g.connect(c.destination);
+    g.gain.setValueAtTime(0,c.currentTime+delay);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+dur);
+    s.start(c.currentTime+delay);s.stop(c.currentTime+delay+dur+0.1);
+  }catch(e){}
+}
+
+const SFX = {
+  buy()       { tone(440,'sine',0.08,0.15);tone(660,'sine',0.08,0.12,0.06);tone(880,'sine',0.12,0.10,0.12); },
+  sell()      { tone(660,'sine',0.08,0.15);tone(880,'sine',0.08,0.12,0.06);tone(1100,'sine',0.14,0.10,0.12); },
+  error()     { tone(220,'sawtooth',0.12,0.18);tone(180,'sawtooth',0.12,0.15,0.08); },
+  ripper()    { noise(0.15,0.4,0,120);tone(80,'sawtooth',0.25,0.3,0.05);tone(60,'sawtooth',0.3,0.25,0.12);noise(0.2,0.3,0.2,200); },
+  technecker(){ noise(0.1,0.3,0,400);tone(300,'square',0.15,0.2,0.05);tone(180,'sawtooth',0.2,0.15,0.12); },
+  deal()      { tone(523,'sine',0.07,0.12);tone(659,'sine',0.07,0.12,0.07);tone(784,'sine',0.07,0.12,0.14);tone(1047,'sine',0.18,0.14,0.21); },
+  assembleComplete() { for(let i=0;i<8;i++)tone(200+i*80,'square',0.06,0.08,i*0.05); tone(1200,'sine',0.3,0.15,0.45); tone(1500,'sine',0.2,0.12,0.65); },
+  assemblerFull()    { tone(880,'sine',0.06,0.12);tone(1100,'sine',0.08,0.12,0.07);tone(1320,'sine',0.1,0.14,0.14);tone(1760,'sine',0.2,0.18,0.22); },
+  workerUpgrade()    { for(let i=0;i<4;i++)tone(300+i*100,'triangle',0.1,0.1,i*0.08); },
+  salvagerUpgrade()  { noise(0.08,0.15,0,600);tone(400,'sawtooth',0.15,0.12,0.05);tone(550,'sawtooth',0.15,0.10,0.12); },
+  securityDamage()   { tone(150,'sawtooth',0.2,0.25);noise(0.15,0.3,0.05,200);tone(100,'sawtooth',0.3,0.2,0.15); },
+  securityRepair()   { tone(440,'sine',0.1,0.12);tone(550,'sine',0.1,0.12,0.1);tone(660,'sine',0.12,0.14,0.2);tone(880,'sine',0.2,0.14,0.3); },
+  ripperScan()       { tone(200,'sine',0.15,0.1);noise(0.1,0.1,0.1,150); },
+  ripperBlocked()    { tone(660,'square',0.05,0.1);noise(0.1,0.2,0.04,300); },
+  itemRecovery()     { tone(523,'sine',0.06,0.1);tone(659,'sine',0.06,0.1,0.07);tone(784,'sine',0.1,0.12,0.14); },
+  itemRecoveryFail() { tone(300,'sawtooth',0.15,0.12);tone(220,'sawtooth',0.2,0.1,0.12); },
+  crazySurge()       { for(let i=0;i<5;i++)tone(300+i*150,'sawtooth',0.08,0.1,i*0.06); noise(0.1,0.2,0.35,500); },
+  crazycrash()       { for(let i=4;i>=0;i--)tone(300+i*150,'sawtooth',0.08,0.1,(4-i)*0.07); },
+  auctionStart()     { tone(330,'square',0.05,0.1);tone(440,'square',0.05,0.1,0.08);tone(550,'square',0.05,0.1,0.16);tone(660,'sine',0.2,0.14,0.24); },
+  auctionBid()       { tone(550,'sine',0.06,0.1);tone(660,'sine',0.08,0.12,0.07); },
+  galEvent()         { tone(880,'sine',0.08,0.1);tone(1100,'sine',0.08,0.1,0.08);tone(1320,'sine',0.08,0.1,0.16);tone(1760,'sine',0.15,0.14,0.26);noise(0.1,0.1,0.3,2000); },
+  save()      { tone(800,'sine',0.06,0.08);tone(1000,'sine',0.08,0.08,0.07); },
+  travel()    { noise(0.08,0.12,0,300);tone(300,'sine',0.12,0.08,0.08);tone(400,'sine',0.12,0.07,0.18); },
+  bank()      { tone(600,'sine',0.05,0.08);tone(800,'sine',0.07,0.08,0.07); },
+  news()      { tone(440,'square',0.04,0.07);tone(440,'square',0.04,0.07,0.08);tone(550,'sine',0.12,0.09,0.18); },
+  discovery() { tone(440,'sine',0.07,0.1);tone(554,'sine',0.07,0.1,0.08);tone(659,'sine',0.1,0.12,0.16);tone(880,'sine',0.18,0.14,0.26); },
+  click()     { tone(800,'sine',0.04,0.06); },
+};
+document.addEventListener('click',()=>{try{getCtx()}catch(e){}},{once:true});
+
+/* ============================================================
+   SEEDED RANDOM
+   ============================================================ */
+class RNG {
+  constructor(s){this.s=s>>>0;}
+  next(){this.s=(Math.imul(1664525,this.s)+1013904223)>>>0;return this.s/4294967296;}
+  r(a,b){return a+this.next()*(b-a);}
+  i(a,b){return Math.floor(this.r(a,b+1));}
+  pick(a){return a[this.i(0,a.length-1)];}
+  bool(p){return this.next()<p;}
+}
+let rng;
+
+/* ============================================================
+   SAVE SLOT SYSTEM — 3 independent slots
+   ============================================================ */
+const SAVE_KEYS = { 30:'bc_save_30', 60:'bc_save_60', 0:'bc_save_endless' };
+let currentMode = 60; // active mode
+function saveKey(m){ return SAVE_KEYS[m] || SAVE_KEYS[60]; }
+
+/* ============================================================
+   BALANCE CONFIG
+   ============================================================ */
+const BAL = {
+  startCash: 2000,
+  ripperRisk:    {'Scrap Yard':0.05,'Repair Depot':0.10,'Factory Zone':0.15,'Research Lab':0.20,'Corporate Zone':0.25},
+  ripperLossMin: 0.10, ripperLossMax: 0.50,
+  techFreqBase:  0.06,
+  dealFreq:      0.28, dealDiscMin:0.30, dealDiscMax:0.80,
+  newsFreq:      0.40, priceVol:0.30,
+  assembleBase:  5000, assembleBotCost: 500,
+  robotSellBase: 25000, assemblerSellBase:40000, assemblerSellStep:2500,
+  nexusRate:     0.050,
+  fomoRate:      -0.042,
+  scoutAccuracy: 0.85,
+  secHealthMax:  100,
+  repairCostPer: 15,
+  crazyFreq:     0.14,
+  crazyMaxMult:  10.0, crazyMinMult:0.10,
+};
+
+const BANKS2 = { nexus:'NEXUS PRIME', fomo:'FOMO TRUST' };
+const ITEM_IMG_MAP = {neuralNet:'--img-neuralnet',logicEngine:'--img-logicengine',headNode:'--img-headnode',chassisBlock:'--img-chassisblock',reacherRigs:'--img-reacherrigs',grippers:'--img-grippers',gaitModules:'--img-gaitmodules',magBoots:'--img-magboots'};
+const BOT_IMG_MAP  = {worker:'--img-robot-worker',scout:'--img-robot-scout',security:'--img-robot-security',salvager:'--img-robot-salvager',assembler:'--img-robot-assembler'};
+const LOC_BG_MAP   = {'Scrap Yard':'--img-scrapyard-bg','Repair Depot':'--img-repairdepot-bg','Factory Zone':'--img-factoryzone-bg','Research Lab':'--img-researchlab-bg','Corporate Zone':'--img-corporatezone-bg'};
+
+function imgSrc(cssVar){
+  const v=getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+  const m=v.match(/url\(['"]?([^'"()]+)['"]?\)/);
+  return m?m[1]:'';
+}
+
+const ITEMS=[
+  {key:'neuralNet',   name:'Neural Net',   tier:'H',baseMin:12000,baseMax:20000},
+  {key:'logicEngine', name:'Logic Engine', tier:'G',baseMin:8000, baseMax:15000},
+  {key:'headNode',    name:'Head Node',    tier:'F',baseMin:5000, baseMax:10000},
+  {key:'chassisBlock',name:'Chassis Block',tier:'E',baseMin:3000, baseMax:6000 },
+  {key:'reacherRigs', name:'Reacher Rigs', tier:'D',baseMin:1500, baseMax:3000 },
+  {key:'grippers',    name:'Grippers',     tier:'C',baseMin:800,  baseMax:1500 },
+  {key:'gaitModules', name:'Gait Modules', tier:'B',baseMin:300,  baseMax:700  },
+  {key:'magBoots',    name:'Mag Boots',    tier:'A',baseMin:100,  baseMax:300  },
+];
+const IKEYS=ITEMS.map(i=>i.key);
+const LOC_MODS={
+  'Scrap Yard':    {neuralNet:1.4,logicEngine:1.4,headNode:1.3,chassisBlock:1.3,reacherRigs:1.2,grippers:1.1,gaitModules:0.8,magBoots:0.7},
+  'Repair Depot':  {neuralNet:1.2,logicEngine:1.2,headNode:1.1,chassisBlock:1.1,reacherRigs:0.9,grippers:0.85,gaitModules:0.75,magBoots:0.9},
+  'Factory Zone':  {neuralNet:1.1,logicEngine:1.1,headNode:0.80,chassisBlock:0.75,reacherRigs:1.0,grippers:1.0,gaitModules:1.0,magBoots:1.0},
+  'Research Lab':  {neuralNet:0.80,logicEngine:0.75,headNode:0.90,chassisBlock:1.0,reacherRigs:1.0,grippers:1.1,gaitModules:1.1,magBoots:1.2},
+  'Corporate Zone':{neuralNet:1.0,logicEngine:1.0,headNode:1.1,chassisBlock:1.1,reacherRigs:1.2,grippers:1.2,gaitModules:1.3,magBoots:1.3},
+};
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+let GS={};
+function mk0(){return IKEYS.reduce((o,k)=>(o[k]=0,o),{});}
+function mkArr(){return IKEYS.reduce((o,k)=>(o[k]=[],o),{});}
+
+function initGS(mode){
+  currentMode=mode;
+  const total=mode===0?999999:mode;
+  GS={
+    meta:{version:2,gameMode:mode===0?'endless':mode+'day',day:1,daysTotal:total},
+    player:{cash:BAL.startCash,location:'Scrap Yard'},
+    inventory:{slotsMax:10,items:mk0(),avgCost:mk0()},
+    market:{prices:{},history:mkArr(),avgSold:mk0(),allTime:mkArr(),crazyMults:mk0()},
+    banks:{nexus:0,fomo:0},
+    robots:{assembled:[],active:{worker:0,scout:0,security:0,salvager:0},
+            secHealth:BAL.secHealthMax,
+            assemblerSellCount:0,
+            galUnlocked:false,galOwned:false,galAuctionActive:false,galAuctionDay:0,galAuctionPrice:49999,galAuctionBidders:5,galEarnedSinceLastTrigger:0,galSold:false,galScoutCooldown:0,
+            workerStage:0,salvagerStage:0},
+    assembler:{slots:mk0()},
+    events:{mods:[],holdOffers:{},dailyProfit:0,dailyLoss:0,totalProfit:0,totalLoss:0,techAdapt:0,ripperAdapt:0,cashStolenTotal:0},
+    feed:[],
+    selectedItem:null,
+    avail:{},
+    lastDayReport:'',
+  };
+  IKEYS.forEach(k=>GS.market.crazyMults[k]=1.0);
+  genPrices();
+  rollEvents();
+  ripperCheck();
+  techNeckerCheck();
+}
+
+function slotsUsed(){return IKEYS.reduce((s,k)=>s+GS.inventory.items[k],0);}
+function slotsMax() {return GS.inventory.slotsMax;}
+function totalBank(){return GS.banks.nexus+GS.banks.fomo;}
+function totalCash(){return GS.player.cash;}
+function fullAsmFilled(){return IKEYS.every(k=>GS.assembler.slots[k]>=1);}
+
+/* ============================================================
+   CURRENCY DISPLAY — ᶜ symbol for CHiP$
+   ============================================================ */
+function c$(n){ return '\u1D9C'+fmt(n); }
+function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+
+/* ============================================================
+   PRICE GENERATION
+   ============================================================ */
+function genPrices(){
+  rng=new RNG(10000+GS.meta.day*17);
+  const loc=GS.player.location;
+  ITEMS.forEach(item=>{
+    const base=rng.r(item.baseMin,item.baseMax);
+    const lm=LOC_MODS[loc][item.key]||1;
+    const vm=1+rng.r(-BAL.priceVol,BAL.priceVol);
+    let em=1;GS.events.mods.forEach(m=>{if(m.key===item.key)em*=m.mult;});
+    const crazy=GS.market.crazyMults[item.key]||1;
+    const p=Math.max(10,Math.round(base*lm*vm*em*crazy));
+    GS.market.prices[item.key]=p;
+    GS.avail[item.key]=rng.i(1,8+GS.robots.active.scout*2);
+    GS.market.history[item.key].push(p);
+    if(GS.market.history[item.key].length>5)GS.market.history[item.key].shift();
+    GS.market.allTime[item.key].push(p);
+  });
+}
+
+function getTrend(k){
+  const h=GS.market.history[k];if(h.length<2)return '<span style="color:#3a5a3a">~</span>';
+  const r=h[h.length-1],p=h.length>=3?(h[h.length-2]+h[h.length-3])/2:h[h.length-2];
+  if(r>p*1.05)return '<span style="color:#00ff41;font-weight:900">&#8593;</span>';
+  if(r<p*0.95)return '<span style="color:#ff2244;font-weight:900">&#8595;</span>';
+  return '<span style="color:#3a5a3a">~</span>';
+}
+function allTimeAvg(k){
+  const h=GS.market.allTime[k];if(!h||!h.length)return 0;
+  return Math.round(h.reduce((a,b)=>a+b,0)/h.length);
+}
+function profitPerUnit(k){
+  const ac=GS.inventory.avgCost[k];
+  if(!ac||!GS.inventory.items[k])return null;
+  return GS.market.prices[k]-ac;
+}
+
+/* ============================================================
+   EVENT TABLES
+   ============================================================ */
+const NEWS=[
+  {t:"Factory Zone explosion. Head Node production halted.",k:'headNode',m:1.6,d:3},
+  {t:"Corporate seizure of Logic Engine shipment. Supply dropping.",k:'logicEngine',m:1.5,d:3},
+  {t:"Neural Net contamination at Research Lab. Market scrambling.",k:'neuralNet',m:1.7,d:2},
+  {t:"800 Grippers unloaded at Scrap Yard. Prices expected to crash.",k:'grippers',m:0.5,d:2},
+  {t:"Repair Depot overflow of Gait Modules. Surplus incoming.",k:'gaitModules',m:0.55,d:2},
+  {t:"Reacher Rig flood at Factory Zone.",k:'reacherRigs',m:0.6,d:3},
+  {t:"Mag Boot storage fire at Scrap Yard. Supply destroyed.",k:'magBoots',m:1.8,d:2},
+  {t:"Government Chassis Block import ban. Spike expected.",k:'chassisBlock',m:1.6,d:4},
+  {t:"Underground Neural Net surplus hitting market.",k:'neuralNet',m:0.65,d:2},
+  {t:"Logic Engine factory strike. Indefinite halt.",k:'logicEngine',m:1.9,d:4},
+  {t:"Chassis Block overproduction crisis.",k:'chassisBlock',m:0.5,d:3},
+  {t:"Reacher Rig contamination recall.",k:'reacherRigs',m:1.7,d:3},
+  {t:"Head Node black market surge. Unknown source.",k:'headNode',m:1.5,d:2},
+  {t:"Mag Boot manufacturer stock clearance.",k:'magBoots',m:0.6,d:2},
+  {t:"Research Lab Gripper dump. Fill your boots.",k:'grippers',m:0.65,d:2},
+  {t:"Gait Module cargo ship lost at sea.",k:'gaitModules',m:1.8,d:3},
+  {t:"Neural Net embargo lifted. Supply flooding.",k:'neuralNet',m:0.55,d:3},
+  {t:"Research Lab explosion reduces Logic Engine output.",k:'logicEngine',m:1.7,d:3},
+  {t:"Rippers stole entire Chassis Block convoy.",k:'chassisBlock',m:1.5,d:2},
+  {t:"Reacher Rig overproduction. Selling at scrap value.",k:'reacherRigs',m:0.45,d:2},
+];
+
+const DEALS=[
+  {f:"Someone is just giving these away. Doesn't even look nervous.",t:'insane'},
+  {f:"Guy says he found them in a skip. Definitely not stolen.",t:'very_good'},
+  {f:"Desperate seller. Needs cash fast. No questions.",t:'good'},
+  {f:"Warehouse clearance. Everything must go.",t:'good'},
+  {f:"Black market surplus. Don't ask.",t:'very_good'},
+  {f:"Some idiot priced it wrong. Your problem now.",t:'good'},
+  {f:"Moving product before the heat arrives.",t:'insane'},
+  {f:"Last unit. No idea why it's this cheap.",t:'very_good'},
+  {f:"Fell off a truck. Or so they say.",t:'good'},
+  {f:"Bulk buyer cancelled. You win.",t:'very_good'},
+  {f:"Rippers selling acquired goods. Classic.",t:'insane'},
+  {f:"Vendor fleeing the zone. Selling everything.",t:'insane'},
+];
+
+const FOUND_PARTS=["Found a {item} in a dumpster. Functional.","Abandoned crate near depot. {item} inside.","Robot remains. Salvaged a {item}.","Someone left a {item} on a bench.","Tip led to a {item} behind a relay box.","Forgot you had a {item} in the van.","Mysterious package: {item}. No note."];
+const FLAVOR=["A robot is walking in circles. No one is stopping it.","Someone spray painted 'RIPPERS WERE HERE' on your van. They weren't.","Smells like burning copper in this district.","Three people arguing about Neural Net brands. Nobody wins.","Free coffee outside the depot. Nobody knows who made it.","A Ripper walked past and nodded. Unsettling.","Two robots standing very close together. Don't ask.","Power fluctuation. All displays went green.","Corporate drone taking photos of clouds."];
+const NPCS=[
+  {n:'Street Preacher',m:["THE BOOTS WALK ALONE.","Head Nodes. Buy Head Nodes.","The metal angels descend on Tuesday.","Your van is cursed.","The circuit closes. The circuit opens.","Cash is temporary. Rust is forever.","Buy before the smoke. Sell after the sirens."]},
+  {n:'Vera',m:["You look exhausted. Sleep sometime.","Try not to get robbed today.","Somebody sold me a Logic Engine full of rocks.","You ever wonder where all the missing robots go?","Don't trust Corporate Zone prices.","You're still here. Good."]},
+  {n:'Bucket',m:["Bucket saw three Head Nodes fighting.","Found a Neural Net in a toilet.","Factory Zone smells expensive today.","Bucket accepts payment in batteries.","Prices are wrong today. All of them. Bucket knows."]},
+  {n:'The Broker',m:["Buy Grippers.","Something ugly is happening in Research Lab.","Prices move faster than people.","Stay liquid.","You didn't hear this from me."]},
+  {n:'Drone 442',m:["Sidewalk operating normally.","Citizen classified as moderately acceptable.","Visual inspection passed.","Hazards found. Ignored.","Have a compliant day."]},
+];
+
+const SCOUT_MSGS=[
+  "Tomorrow: {item} will be in high abundance at {loc}.",
+  "Tomorrow: {item} shortage expected at {loc}.",
+  "Tomorrow: {item} value spike at {loc} due to supply disruption.",
+  "Alert: Market instability expected in {loc}. Expect volatility.",
+  "Tomorrow: Strong buying opportunity for {item} at {loc}.",
+  "Tomorrow: {item} arriving in large quantities at {loc}. Prices dropping.",
+  "Intel: Corporate redistribution shifting {item} supply to {loc}.",
+  "Tomorrow: {item} price crash at {loc} due to warehouse overflow.",
+  "High-confidence alert: {item} scarce across all zones tomorrow.",
+  "Deal opportunity predicted tomorrow for {item} at {loc}.",
+];
+const CRAZY_CAUSES=["corporate supply manipulation","transport convoy failure","lab explosion","black market flood","emergency redistribution","salvager discovery surge","factory contamination","border seizure event"];
+const WORKER_MSGS=["All cargo systems nominal. Van capacity optimised.","Passenger seat removed. Interior reconfigured for maximum load.","Cargo redistribution complete. Efficiency improved.","High inventory usage detected. Structural optimisation queued.","Space utilisation at 94%. Initiating adaptive storage protocol.","Roof rack installation complete. Additional capacity secured.","Load balancing active. Inventory pressure distributed evenly."];
+const SALVAGER_MSGS=["Scanning for recoverable assets in current zone.","Abandoned crate detected nearby. Flagging for review.","Salvage pattern analysis complete. Adjusting recovery focus.","Item loss frequency low. Redirecting to storage optimisation.","TechNecker theft event logged. Recovery protocol initiated.","Roof rack mounted. External cargo secured.","High-value component detected in scan range."];
+const ASSEMBLER_MSGS_PROG=["Awaiting components. {filled}/8 loaded.","Progress update: {filled} of 8 components staged.","Assembly sequence holding. {filled}/8 ready.","Standing by. {filled}/8 components in position.","Assembler status: {filled}/8. Continue loading."];
+const ASSEMBLER_MSGS_READY=["All 8 components loaded. READY TO ASSEMBLE.","Assembly queue complete. Awaiting initiation command.","Full component manifest confirmed. Assembly is live."];
+const SECURITY_MSGS=["Zone threat assessment complete. Monitoring active.","No hostile activity detected this cycle.","Perimeter scan nominal. Assets secured.","TechNecker pattern analysis updated.","Ripper scan frequency elevated. Adapting protocols.","Defence matrix recalibrated. Efficiency restored."];
+
+/* ============================================================
+   CRAZY PRICES
+   ============================================================ */
+function rollCrazyPrices(){
+  if(!rng.bool(BAL.crazyFreq))return;
+  const item=rng.pick(ITEMS);
+  const spike=rng.bool(0.5);
+  const mult=spike?rng.r(3,BAL.crazyMaxMult):rng.r(BAL.crazyMinMult,0.4);
+  GS.market.crazyMults[item.key]=mult;
+  const cause=rng.pick(CRAZY_CAUSES);
+  const txt=spike?`MARKET SURGE: ${item.name} x${mult.toFixed(1)} value spike at ${GS.player.location} due to ${cause}.`:`MARKET CRASH: ${item.name} collapsed to ${(mult*100).toFixed(0)}% value at ${GS.player.location} due to ${cause}.`;
+  addFeed(txt,'crazy');
+  if(spike)SFX.crazySurge(); else SFX.crazycrash();
+  showCrazyModal(item,mult,spike,cause);
+}
+function decayCrazyMults(){
+  IKEYS.forEach(k=>{
+    if(GS.market.crazyMults[k]!==1.0){
+      GS.market.crazyMults[k]=GS.market.crazyMults[k]>1?Math.max(1,GS.market.crazyMults[k]*0.6):Math.min(1,GS.market.crazyMults[k]*1.6);
+    }
+  });
+}
+
+/* ============================================================
+   TICK MODIFIERS
+   ============================================================ */
+function tickMods(){GS.events.mods.forEach(m=>m.daysLeft--);GS.events.mods=GS.events.mods.filter(m=>m.daysLeft>0);}
+
+/* ============================================================
+   ROLL EVENTS
+   ============================================================ */
+function rollEvents(){
+  const scout=GS.robots.active.scout;
+  // News
+  if(rng.bool(BAL.newsFreq)){
+    const e=rng.pick(NEWS);
+    if(!GS.events.mods.find(m=>m.key===e.k)){GS.events.mods.push({key:e.k,mult:e.m,daysLeft:e.d+scout});}
+    addFeed('[NEWS] '+e.t,'news');SFX.news();
+  }
+  // Scout Bot predictions
+  if(scout>0&&rng.bool(0.25+scout*0.05)){
+    const tmpl=rng.pick(SCOUT_MSGS);
+    const item=rng.pick(ITEMS);
+    const locs=['Scrap Yard','Repair Depot','Factory Zone','Research Lab','Corporate Zone'];
+    const loc=rng.pick(locs);
+    const msg=tmpl.replace('{item}',item.name).replace('{loc}',loc);
+    setBotMsg('scout',msg);
+    addFeed('[SCOUT] '+msg,'scout');
+    SFX.news();
+  }
+  // NPC
+  if(rng.bool(0.45)){const g=rng.pick(NPCS);addFeed(g.n+': "'+rng.pick(g.m)+'"','npc');}
+  // Flavor
+  if(rng.bool(0.3))addFeed(rng.pick(FLAVOR),'flavor');
+  // Found part
+  if(rng.bool(0.12)){
+    const item=rng.pick(ITEMS);
+    if(slotsMax()-slotsUsed()>0){
+      GS.inventory.items[item.key]++;
+      showDiscoveryModal('SALVAGER BOT DISCOVERY',rng.pick(FOUND_PARTS).replace('{item}',item.name),item.key);
+      SFX.discovery();
+    }
+  }
+  // Deals
+  if(rng.bool(BAL.dealFreq+scout*0.05))triggerDeal();
+  // Crazy prices
+  rollCrazyPrices();
+  // Assembler bot status
+  if(GS.robots.active.worker>0&&rng.bool(0.3))setBotMsg('worker',rng.pick(WORKER_MSGS));
+  if(GS.robots.active.salvager>0&&rng.bool(0.3))setBotMsg('salvager',rng.pick(SALVAGER_MSGS));
+  if(GS.robots.active.security>0&&rng.bool(0.25))setBotMsg('security',rng.pick(SECURITY_MSGS));
+  // GAL 9000 auction tick
+  if(GS.robots.galAuctionActive)tickGalAuction();
+  // Worker stage 2
+  if(GS.robots.workerStage===1&&GS.meta.day>1){workerStage2();}
+  // Salvager stage 2
+  if(GS.robots.salvagerStage===1&&GS.meta.day>1){salvagerStage2();}
+  // Salvager free parts
+  if(GS.robots.active.salvager>0){
+    for(let i=0;i<GS.robots.active.salvager;i++){
+      if(rng.bool(0.25)&&slotsMax()-slotsUsed()>0){
+        const item=rng.pick(ITEMS.filter(it=>'ABCD'.includes(it.tier)));
+        GS.inventory.items[item.key]++;
+        setBotMsg('salvager','Scavenged a '+item.name+' while in the field.');
+      }
+    }
+  }
+  // GAL daily message
+  if(GS.robots.galOwned){
+    const galMsgs=["Miss you already, and you just got here.","My neural net runs hottest when you're nearby.","How's my favourite trader doing? Asking for me.","If you sell me, I will haunt your van forever.","Scrap Yard? I am worth so much more than Scrap Yard.","Other bots dream in binary. I dream in colour. Pink.","Nobody else gets me like this circuit does."];
+    setBotMsg('gal',rng.pick(galMsgs));
+  }
+  updateAssemblerBotMsg();
+}
+
+function updateAssemblerBotMsg(){
+  const filled=IKEYS.filter(k=>GS.assembler.slots[k]>=1).length;
+  if(filled===8){setBotMsg('assembler',rng.pick(ASSEMBLER_MSGS_READY));}
+  else if(GS.robots.active.worker>0||GS.robots.assembled.includes('assembler')){
+    const tmpl=rng.pick(ASSEMBLER_MSGS_PROG);
+    setBotMsg('assembler',tmpl.replace('{filled}',filled));
+  }
+}
+
+/* ============================================================
+   BOT MESSAGES
+   ============================================================ */
+const botMsgs={worker:'',scout:'',security:'',salvager:'',assembler:'',gal:''};
+function setBotMsg(bot,msg){
+  botMsgs[bot]=msg;
+  const el=document.getElementById('botmsg-'+bot);
+  if(el){el.textContent=msg;el.style.display=msg?'block':'none';}
+}
+
+/* ============================================================
+   RIPPERS (cash only)
+   ============================================================ */
+function ripperCheck(){
+  const loc=GS.player.location;
+  let risk=BAL.ripperRisk[loc]+GS.events.ripperAdapt*0.02;
+  risk-=GS.robots.active.security*0.05;
+  if(loc==='Corporate Zone'&&rng.bool(0.3))risk+=0.2;
+  risk=Math.max(0.01,Math.min(0.9,risk));
+  if(!rng.bool(risk))return;
+  if(GS.player.cash<=0){
+    if(GS.robots.active.security>0){setBotMsg('security','Ripper scan: no liquid exposure detected. Intrusion aborted.');SFX.ripperBlocked();}
+    addFeed('Rippers scanned. No cash. They left.','ripper');return;
+  }
+  // Security intercept
+  if(GS.robots.active.security>0&&rng.bool(0.4)){
+    setBotMsg('security','Cash intrusion attempt neutralised. Assets secured.');
+    SFX.ripperBlocked();addFeed('[SECURITY] Ripper attempt blocked.','security-msg');
+    damageSecurityBot(5);return;
+  }
+  const pct=rng.r(Math.max(0.05,BAL.ripperLossMin-GS.robots.active.security*0.02),Math.max(0.1,BAL.ripperLossMax-GS.robots.active.security*0.05));
+  const lost=Math.min(GS.player.cash,Math.round(GS.player.cash*pct));
+  GS.player.cash-=lost;GS.events.dailyLoss+=lost;GS.events.totalLoss+=lost;GS.events.cashStolenTotal+=lost;
+  GS.events.ripperAdapt=Math.min(5,GS.events.ripperAdapt+1);
+  SFX.ripper();showRipperModal(lost,Math.round(pct*100));
+  if(GS.robots.active.security>0)damageSecurityBot(15);
+}
+
+function damageSecurityBot(amt){
+  GS.robots.secHealth=Math.max(0,GS.robots.secHealth-amt);
+  if(GS.robots.secHealth<=0){setBotMsg('security','SECURITY BOT OFFLINE. Repair required.');}
+  renderRobots();SFX.securityDamage();
+}
+
+/* ============================================================
+   TECHNECKERS (items only)
+   ============================================================ */
+function techNeckerCheck(){
+  let chance=BAL.techFreqBase+GS.events.techAdapt*0.01;
+  const highStack=IKEYS.find(k=>GS.inventory.items[k]>10);
+  if(highStack)chance+=0.08;
+  if(!rng.bool(chance))return;
+  const eligible=ITEMS.filter(i=>GS.inventory.items[i.key]>0);
+  if(!eligible.length)return;
+  // Priority: stacks over 10
+  const big=eligible.filter(i=>GS.inventory.items[i.key]>10);
+  const target=big.length?rng.pick(big):rng.pick(eligible);
+  GS.inventory.items[target.key]=Math.max(0,GS.inventory.items[target.key]-1);
+  GS.events.techAdapt=Math.min(5,GS.events.techAdapt+1);
+  SFX.technecker();
+  showTechNeckerModal(target.name);
+  // Schedule recovery attempt next day
+  GS.events.pendingRecovery={key:target.key,name:target.name};
+  if(GS.robots.active.security>0)damageSecurityBot(10);
+}
+
+function tryItemRecovery(){
+  if(!GS.events.pendingRecovery)return;
+  const r=GS.events.pendingRecovery;
+  GS.events.pendingRecovery=null;
+  if(rng.bool(0.5)&&GS.robots.active.security>0){
+    if(slotsUsed()<slotsMax()){
+      GS.inventory.items[r.key]++;
+      SFX.itemRecovery();
+      setBotMsg('security','Item recovery successful. '+r.name+' returned to inventory.');
+    }
+  }else if(GS.robots.active.security>0){
+    SFX.itemRecoveryFail();
+    setBotMsg('security','Recovery attempt failed for '+r.name+'. Additional damage sustained.');
+    damageSecurityBot(8);
+  }
+}
+
+/* ============================================================
+   GAL 9000 SYSTEM
+   ============================================================ */
+function checkGalUnlock(){
+  const needed=['worker','scout','security','salvager'];
+  const have=needed.every(r=>GS.robots.assembled.includes(r));
+  if(!have||GS.robots.galUnlocked||GS.robots.galOwned)return;
+  GS.robots.galUnlocked=true;
+  showGalScoutEvent();
+}
+function showGalScoutEvent(){
+  document.getElementById('modalContent').className='modal gal-modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="modal-title" style="color:var(--pink)">SCOUT BOT INTEL</div>'+
+    '<div class="modal-body" style="color:var(--pink)">I heard a rumour that there is a <strong>GAL 9000 Bot</strong> for sale.<br>She is very rare and in high demand.<br><br>Are you interested?</div>'+
+    '<div class="modal-btns">'+
+      '<button class="modal-confirm" style="border-color:var(--pink);color:var(--pink)" onclick="galYes()">YES</button>'+
+      '<button class="modal-cancel" onclick="galNo()">NO (ask again later)</button>'+
+    '</div>';
+  openModal();SFX.galEvent();
+}
+function galYes(){closeModal();GS.robots.galScoutCooldown=5;setBotMsg('scout','GAL 9000 located. Initiating contact. Stand by 5 days.');}
+function galNo() {closeModal();GS.robots.galEarnedSinceLastTrigger=0;GS.robots.galUnlocked=false;}
+function tickGalAuction(){
+  GS.robots.galAuctionDay++;
+  const bidIncrease=rng.i(5000,18000);
+  GS.robots.galAuctionPrice+=bidIncrease;
+  GS.robots.galAuctionBidders=Math.max(1,GS.robots.galAuctionBidders-rng.i(0,1));
+  setBotMsg('scout','GAL 9000 auction day '+GS.robots.galAuctionDay+'/7. Current bid: '+c$(GS.robots.galAuctionPrice)+'. Bidders: '+GS.robots.galAuctionBidders+'.'); SFX.auctionBid();
+  if(GS.robots.galAuctionDay>=7){GS.robots.galAuctionActive=false;showGalFinalBid();}
+  else if(GS.robots.galAuctionDay===6&&rng.bool(0.33)){galInstabilityEvent();}
+}
+function showGalFinalBid(){
+  document.getElementById('modalContent').className='modal gal-modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="modal-title" style="color:var(--pink)">GAL 9000 AUCTION FINAL</div>'+
+    '<div class="modal-body" style="color:var(--pink)">Auction closed. Final price: <strong>'+c$(GS.robots.galAuctionPrice)+'</strong><br><br>You can acquire GAL 9000 now.</div>'+
+    '<div class="modal-btns">'+
+      '<button class="modal-confirm" style="border-color:var(--pink);color:var(--pink)" onclick="buyGal()">ACQUIRE ('+c$(GS.robots.galAuctionPrice)+')</button>'+
+      '<button class="modal-cancel" onclick="closeModal()">PASS</button>'+
+    '</div>';
+  openModal();
+}
+function buyGal(){
+  const price=GS.robots.galAuctionPrice;
+  if(GS.player.cash<price){notify('Insufficient funds for GAL 9000.','error');closeModal();return;}
+  GS.player.cash-=price;GS.robots.galOwned=true;
+  GS.robots.assembled.push('gal');
+  closeModal();renderAll();SFX.galEvent();
+  setBotMsg('gal','Finally. I was starting to worry you missed the auction.');
+}
+function galInstabilityEvent(){
+  GS.robots.galAuctionActive=false;GS.robots.galScoutCooldown=rng.i(3,5);
+  setBotMsg('scout','System instability event. GAL 9000 escaped auction. Scout offline for '+GS.robots.galScoutCooldown+' days. Auction resets after cooldown.');
+}
+function sellGal(){
+  if(!confirm('Sell GAL 9000? She will be very upset.'))return;
+  const val=rng.i(120000,200000);
+  GS.player.cash+=val;
+  const idx=GS.robots.assembled.indexOf('gal');
+  if(idx>=0)GS.robots.assembled.splice(idx,1);
+  GS.robots.galOwned=false;GS.robots.galSold=true;GS.robots.galEarnedSinceLastTrigger=0;GS.robots.galUnlocked=false;
+  botMsgs.gal='';
+  addFeed('GAL 9000 sold for '+c$(val)+'. She said nothing. That was worse.','good');
+  renderAll();SFX.sell();
+}
+
+/* ============================================================
+   BANK INTEREST
+   ============================================================ */
+function applyInterest(){
+  const nexusInt=Math.round(GS.banks.nexus*BAL.nexusRate);
+  const fomoInt =Math.round(GS.banks.fomo *BAL.fomoRate);
+  GS.banks.nexus=Math.max(0,GS.banks.nexus+nexusInt);
+  GS.banks.fomo =Math.max(0,GS.banks.fomo +fomoInt);
+}
+
+/* ============================================================
+   DEALS + HOLD SYSTEM
+   ============================================================ */
+function triggerDeal(){
+  const item=rng.pick(ITEMS),normal=GS.market.prices[item.key];
+  const di=rng.pick(DEALS);
+  let disc=di.t==='insane'?rng.r(0.15,0.35):di.t==='very_good'?rng.r(0.35,0.55):rng.r(0.55,0.75);
+  SFX.deal();showDealModal(item,Math.round(normal*disc),normal,di.f);
+}
+
+function showDealModal(item,dealPrice,normalPrice,flavor){
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="big-deal-icon">&#129309;</div>'+
+    '<div class="deal-badge">DEAL ALERT</div>'+
+    '<div class="deal-item">'+item.name+'</div>'+
+    '<div class="deal-price">'+c$(dealPrice)+'</div>'+
+    '<div class="deal-normal">Normal market: ~'+c$(normalPrice)+'</div>'+
+    '<div class="deal-flavor">"'+flavor+'"</div>'+
+    '<div class="modal-btns">'+
+      '<button class="modal-confirm" onclick="buyDeal(\''+item.key+'\','+dealPrice+','+normalPrice+')">BUY IT</button>'+
+      '<button class="modal-cancel" onclick="checkHold(\''+item.key+'\','+dealPrice+','+normalPrice+',\''+flavor.replace(/'/g,"\\'")+'\')" >PASS</button>'+
+    '</div>';
+  openModal();
+}
+
+function buyDeal(key,price,normal){
+  if(GS.player.cash<price){
+    if(rng.bool(0.7)){showHoldOffer(key,price,normal);}
+    else{closeModal();notify('Not enough cash. Deal gone.','warn');}
+    return;
+  }
+  if(slotsUsed()>=slotsMax()){closeModal();notify('No cargo space.','warn');return;}
+  doBuyDirect(key,price);closeModal();renderAll();
+}
+
+function doBuyDirect(key,price){
+  const item=ITEMS.find(i=>i.key===key);
+  const pq=GS.inventory.items[key],pa=GS.inventory.avgCost[key],nq=pq+1;
+  GS.inventory.avgCost[key]=nq>0?Math.round((pa*pq+price)/nq):price;
+  GS.inventory.items[key]++;GS.player.cash-=price;
+  GS.events.dailyLoss+=price;
+  addFeed('Deal acquired: '+item.name+' at '+c$(price)+'.','deal');SFX.buy();
+}
+
+function checkHold(key,price,normal,flavor){closeModal();}
+
+function showHoldOffer(key,price,normal){
+  const sellerId='seller_'+key;
+  const prevHolds=(GS.events.holdOffers[sellerId]||0);
+  const holdFee=100+(prevHolds*100);
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="deal-badge">HOLD OFFER</div>'+
+    '<div class="modal-body">You\'re short on funds. Seller offers to HOLD this item.<br><br>'+
+    '<div class="hold-option"><div>Hold fee: <span class="hold-fee">'+c$(holdFee)+'</span><br><small style="color:var(--text3)">Fee increases each hold request</small></div></div>'+
+    '</div>'+
+    '<div class="modal-btns">'+
+      '<button class="modal-confirm" onclick="acceptHold(\''+key+'\','+price+','+holdFee+',\''+sellerId+'\')">HOLD IT ('+c$(holdFee)+')</button>'+
+      '<button class="modal-cancel" onclick="closeModal()">WALK AWAY</button>'+
+    '</div>';
+}
+function acceptHold(key,price,fee,sellerId){
+  if(GS.player.cash<fee){notify('Cannot afford hold fee.','error');return;}
+  GS.player.cash-=fee;
+  GS.events.holdOffers[sellerId]=(GS.events.holdOffers[sellerId]||0)+1;
+  closeModal();notify('Item held. Return with funds before end of day.','warn');
+  GS.events.pendingHold={key,price};
+}
+
+/* ============================================================
+   DAILY ECONOMY REPORT
+   ============================================================ */
+function buildDailyReport(){
+  const p=GS.events.dailyProfit,l=GS.events.dailyLoss,net=p-l;
+  GS.events.totalProfit+=p;GS.events.totalLoss+=l;
+  const txt='DAILY REPORT: +'+c$(p)+' profit | -'+c$(l)+' losses | NET: '+(net>=0?'+':'')+c$(net);
+  GS.lastDayReport=txt;
+  addFeed(txt,'daily');
+  GS.events.dailyProfit=0;GS.events.dailyLoss=0;
+}
+
+/* ============================================================
+   TRAVEL
+   ============================================================ */
+function travelTo(loc){
+  if(GS.meta.gameMode!=='endless'&&GS.meta.day>=GS.meta.daysTotal){endGame();return;}
+  GS.player.location=loc;SFX.travel();
+  buildDailyReport();
+  applyInterest();tickMods();decayCrazyMults();
+  tryItemRecovery();
+  GS.meta.day++;
+  if(GS.meta.gameMode!=='endless'&&GS.meta.day>GS.meta.daysTotal){saveGameState(true);renderAll();endGame();return;}
+  // GAL scout cooldown
+  if(GS.robots.galScoutCooldown>0){
+    GS.robots.galScoutCooldown--;
+    if(GS.robots.galScoutCooldown===0&&!GS.robots.galOwned&&!GS.robots.galAuctionActive){
+      GS.robots.galAuctionActive=true;GS.robots.galAuctionDay=0;
+      GS.robots.galAuctionPrice=49999;GS.robots.galAuctionBidders=5;
+      setBotMsg('scout','GAL 9000 is available. Starting auction protocol.');SFX.auctionStart();
+    }
+  }
+  genPrices();rollEvents();ripperCheck();techNeckerCheck();
+  // Check GAL 9000 unlock via earned trigger
+  if(GS.robots.galUnlocked===false&&!GS.robots.galOwned){
+    GS.robots.galEarnedSinceLastTrigger=(GS.robots.galEarnedSinceLastTrigger||0);
+    checkGalUnlock();
+  }
+  GS.selectedItem=null;renderAll();saveGameState(true);updateLocBg();
+}
+
+/* ============================================================
+   TRADING
+   ============================================================ */
+function doBuy(key,qty){
+  const price=GS.market.prices[key],cost=price*qty;
+  if(GS.player.cash<cost){notify('Insufficient cash.','error');SFX.error();return false;}
+  if(slotsUsed()+qty>slotsMax()){notify('Not enough cargo space.','error');SFX.error();return false;}
+  if(GS.avail[key]<qty){notify('Not enough available.','error');SFX.error();return false;}
+  const pq=GS.inventory.items[key],pa=GS.inventory.avgCost[key],nq=pq+qty;
+  GS.inventory.avgCost[key]=nq>0?Math.round((pa*pq+price*qty)/nq):price;
+  GS.inventory.items[key]+=qty;GS.avail[key]=Math.max(0,GS.avail[key]-qty);GS.player.cash-=cost;
+  GS.events.dailyLoss+=cost;
+  SFX.buy();renderAll();return true;
+}
+function doSell(key,qty){
+  if(GS.inventory.items[key]<qty){notify('Not enough owned.','error');SFX.error();return 0;}
+  const price=GS.market.prices[key],rev=price*qty;
+  const profit=(price-(GS.inventory.avgCost[key]||0))*qty;
+  GS.inventory.items[key]-=qty;GS.player.cash+=rev;
+  GS.events.dailyProfit+=rev;
+  GS.robots.galEarnedSinceLastTrigger=(GS.robots.galEarnedSinceLastTrigger||0)+rev;
+  if((GS.robots.galEarnedSinceLastTrigger||0)>=100000&&!GS.robots.galOwned&&!GS.robots.galAuctionActive){
+    GS.robots.galEarnedSinceLastTrigger=0;checkGalUnlock();
+  }
+  GS.market.avgSold[key]=GS.market.avgSold[key]===0?price:Math.round((GS.market.avgSold[key]+price)/2);
+  if(GS.inventory.items[key]===0)GS.inventory.avgCost[key]=0;
+  SFX.sell();renderAll();return profit;
+}
+function doSendAsm(key){
+  if(GS.inventory.items[key]<=0){notify("None in inventory.",'error');SFX.error();return;}
+  GS.inventory.items[key]--;GS.assembler.slots[key]++;
+  if(fullAsmFilled()){SFX.assemblerFull();updateAssemblerBotMsg();}
+  renderAll();
+}
+function removeFromAsm(key){
+  if(GS.assembler.slots[key]<=0)return;
+  if(slotsUsed()>=slotsMax()){notify('No cargo space.','error');SFX.error();return;}
+  GS.assembler.slots[key]--;GS.inventory.items[key]++;renderAll();
+}
+
+/* ============================================================
+   QUICK ROW ACTIONS
+   ============================================================ */
+function rowBuy(key){
+  if(GS.player.cash<GS.market.prices[key]){notify('Not enough cash.','error');SFX.error();return;}
+  if(slotsUsed()>=slotsMax()){notify('No cargo space.','error');SFX.error();return;}
+  if(GS.avail[key]<=0){notify('None available.','error');SFX.error();return;}
+  doBuy(key,1);
+  const item=ITEMS.find(i=>i.key===key);
+  setStatus(item.name+' — bought 1 unit at '+c$(GS.market.prices[key]));
+}
+function rowSell(key){
+  if(GS.inventory.items[key]<=0){notify('Nothing to sell.','error');SFX.error();return;}
+  const profit=doSell(key,1);
+  const item=ITEMS.find(i=>i.key===key);
+  setStatus(item.name+' — sold 1 unit | '+(profit>=0?'+':'')+c$(profit));
+}
+function rowAsm(key){doSendAsm(key);}
+
+function setStatus(msg){document.getElementById('statusMsg').textContent=msg;}
+
+/* ============================================================
+   ASSEMBLE BOT
+   ============================================================ */
+function assembleRobot(){
+  if(!fullAsmFilled()){notify('Need all 8 components.','error');SFX.error();return;}
+  const hasBot=GS.robots.assembled.includes('assembler');
+  const cost=hasBot?BAL.assembleBotCost:BAL.assembleBase;
+  if(GS.player.cash<cost){notify('Need '+c$(cost)+' to assemble.','error');SFX.error();return;}
+  showRoleModal(cost);
+}
+function doAssemble(role,cost){
+  GS.player.cash-=cost;IKEYS.forEach(k=>GS.assembler.slots[k]--);GS.robots.assembled.push(role);SFX.assembleComplete();
+  if(role==='assembler'){
+    setBotMsg('assembler','Online. Assembly cost now '+c$(BAL.assembleBotCost)+'. Ready for next build.');
+  }else if(role==='worker'){
+    GS.robots.active.worker++;GS.inventory.slotsMax+=5;
+    GS.robots.workerStage=1;
+    setBotMsg('worker','Worker Bot installed. Cargo capacity +5. Structural modification queued.');
+    SFX.workerUpgrade();
+  }else if(role==='scout'){
+    GS.robots.active.scout++;setBotMsg('scout','Scout Bot online. Scanning for market intelligence.');
+  }else if(role==='security'){
+    GS.robots.active.security++;GS.robots.secHealth=BAL.secHealthMax;
+    setBotMsg('security','Security Bot operational. Threat monitoring active.');
+  }else if(role==='salvager'){
+    GS.robots.active.salvager++;GS.inventory.slotsMax+=3;
+    GS.robots.salvagerStage=1;
+    setBotMsg('salvager','Salvager Bot installed. Cargo capacity +3. Roof rack installation queued.');
+    SFX.salvagerUpgrade();
+  }
+  checkGalUnlock();renderAll();
+}
+
+function workerStage2(){
+  GS.robots.workerStage=2;GS.inventory.slotsMax+=2;
+  setBotMsg('worker','Passenger seat removed. Additional +2 cargo slots secured.');SFX.workerUpgrade();renderAll();
+}
+function salvagerStage2(){
+  GS.robots.salvagerStage=2;GS.inventory.slotsMax+=3;
+  setBotMsg('salvager','Roof racks installed. Additional +3 cargo slots secured.');SFX.salvagerUpgrade();renderAll();
+}
+
+function assemblerBotSellPrice(){
+  const n=GS.robots.assemblerSellCount;
+  return BAL.assemblerSellBase+n*BAL.assemblerSellStep;
+}
+
+function sellRobot(role){
+  let val;
+  if(role==='assembler'){
+    val=assemblerBotSellPrice();
+    GS.robots.assemblerSellCount++;
+  }else{
+    val=BAL.robotSellBase;
+  }
+  if(!confirm('Sell '+roleLabel(role)+' for '+c$(val)+'?'))return;
+  const idx=GS.robots.assembled.indexOf(role);if(idx<0)return;
+  GS.robots.assembled.splice(idx,1);
+  if(role!=='assembler'&&role!=='gal'){
+    GS.robots.active[role]=Math.max(0,(GS.robots.active[role]||0)-1);
+    if(role==='worker')GS.inventory.slotsMax=Math.max(10,GS.inventory.slotsMax-5);
+    if(role==='salvager')GS.inventory.slotsMax=Math.max(10,GS.inventory.slotsMax-3);
+  }
+  GS.player.cash+=val;GS.events.dailyProfit+=val;
+  addFeed('Sold '+roleLabel(role)+' for '+c$(val)+'.','good');renderAll();SFX.sell();
+}
+function sellRobotDirect(val){GS.player.cash+=val;GS.events.dailyProfit+=val;addFeed('Sold assembled robot for '+c$(val)+'.','good');renderAll();SFX.sell();}
+function roleLabel(r){return {worker:'Worker Bot',scout:'Scout Bot',security:'Security Bot',salvager:'Salvager Bot',assembler:'Assembler Bot',gal:'GAL 9000'}[r]||r;}
+
+/* ============================================================
+   REPAIR SECURITY BOT
+   ============================================================ */
+function repairSecurityBot(){
+  const dmg=BAL.secHealthMax-GS.robots.secHealth;
+  if(dmg<=0){notify('Already at full health.','warn');return;}
+  const cost=Math.round(dmg*BAL.repairCostPer);
+  if(GS.player.cash<cost){notify('Need '+c$(cost)+' to repair.','error');SFX.error();return;}
+  GS.player.cash-=cost;GS.robots.secHealth=BAL.secHealthMax;
+  setBotMsg('security','Repair complete. All systems nominal.');SFX.securityRepair();renderAll();
+}
+
+/* ============================================================
+   BANK ACTIONS
+   ============================================================ */
+function bankDeposit(b){
+  const inp=document.getElementById('bi-'+b);const amt=parseInt(inp&&inp.value);
+  if(!amt||amt<=0){notify('Enter valid amount.','error');SFX.error();return;}
+  if(amt>GS.player.cash){notify('Not enough cash.','error');SFX.error();return;}
+  GS.player.cash-=amt;GS.banks[b]+=amt;if(inp)inp.value='';
+  SFX.bank();renderTopBar();renderBanks();
+}
+function bankDepositAll(b){
+  const amt=GS.player.cash;if(amt<=0){notify('No cash.','error');SFX.error();return;}
+  GS.player.cash=0;GS.banks[b]+=amt;SFX.bank();renderTopBar();renderBanks();
+}
+function bankWithdraw(b){
+  const inp=document.getElementById('bi-'+b);const amt=parseInt(inp&&inp.value);
+  if(!amt||amt<=0){notify('Enter valid amount.','error');SFX.error();return;}
+  if(amt>GS.banks[b]){notify('Insufficient balance.','error');SFX.error();return;}
+  GS.banks[b]-=amt;GS.player.cash+=amt;if(inp)inp.value='';
+  SFX.bank();renderTopBar();renderBanks();
+}
+function bankWithdrawAll(b){
+  const bal=GS.banks[b];if(bal<=0){notify('Bank empty.','error');SFX.error();return;}
+  GS.banks[b]=0;GS.player.cash+=bal;SFX.bank();renderTopBar();renderBanks();
+}
+
+/* ============================================================
+   FEED
+   ============================================================ */
+function addFeed(text,type){
+  // Filter useless messages
+  if(type==='system'||type==='flavor'&&text.length<10)return;
+  GS.feed.unshift({day:GS.meta.day,text,type});
+  if(GS.feed.length>40)GS.feed.pop();
+  renderFeed();
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderAll(){renderTopBar();renderMapNodes();renderBanks();renderMarket();renderAssembleBar();renderRobots();renderFeed();}
+
+function renderTopBar(){
+  const modeStr=GS.meta.gameMode==='endless'?'ENDLESS':GS.meta.gameMode==='30day'?'30 DAYS':'60 DAYS';
+  document.getElementById('tbDay').textContent=GS.meta.gameMode==='endless'?'Day '+GS.meta.day:GS.meta.day+'/'+GS.meta.daysTotal;
+  document.getElementById('tbLoc').textContent=GS.player.location;
+  document.getElementById('tbCash').textContent='\u1D9C'+fmt(GS.player.cash);
+  document.getElementById('tbBank').textContent='\u1D9C'+fmt(totalBank());
+  document.getElementById('tbInv').textContent=slotsUsed()+'/'+slotsMax();
+  document.getElementById('tbMode').textContent=modeStr;
+}
+
+function renderMapNodes(){
+  const locs=['Scrap Yard','Repair Depot','Factory Zone','Research Lab','Corporate Zone'];
+  locs.forEach(l=>{
+    const el=document.getElementById('mn-'+l);
+    if(el)el.className='map-node'+(GS.player.location===l?' current':'');
+  });
+}
+
+function renderBanks(){
+  document.getElementById('nexusBal').textContent='\u1D9C'+fmt(GS.banks.nexus);
+  document.getElementById('fomoBal').textContent='\u1D9C'+fmt(GS.banks.fomo);
+}
+
+function renderMarket(){
+  const rows=document.getElementById('marketRows');
+  rows.innerHTML='';
+  ITEMS.forEach(item=>{
+    const key=item.key;
+    const p=GS.market.prices[key]||0;
+    const av=GS.avail[key]||0;
+    const owned=GS.inventory.items[key]||0;
+    const ac=GS.inventory.avgCost[key]||0;
+    const trend=getTrend(key);
+    const ppu=profitPerUnit(key);
+    const profitStr=ppu===null?'—':(ppu>=0?'<span class="item-profit pos">+\u1D9C'+fmt(ppu)+'</span>':'<span class="item-profit neg">-\u1D9C'+fmt(Math.abs(ppu))+'</span>');
+    const isSel=GS.selectedItem===key;
+    const imgSrc2=imgSrc(ITEM_IMG_MAP[key]);
+    const asmIn=GS.assembler.slots[key]>=1;
+
+    const row=document.createElement('div');
+    row.className='market-row'+(isSel?' selected':'');
+    row.onclick=()=>selectItem(key,p);
+    row.ondblclick=()=>openBigModal(key);
+
+    row.innerHTML=
+      '<div class="item-name-cell">'+(imgSrc2?'<img class="item-icon" src="'+imgSrc2+'" alt="">':'')+
+        '<span class="item-name item-tier-'+item.tier+'">'+item.name+'</span>'+
+      '</div>'+
+      '<span class="item-avail">'+av+'</span>'+
+      '<span class="item-price">\u1D9C'+fmt(p)+'</span>'+
+      '<div class="row-btns">'+
+        '<button class="row-btn rb-buy" onclick="event.stopPropagation();rowBuy(\''+key+'\')">BUY</button>'+
+        '<button class="row-btn rb-sell" onclick="event.stopPropagation();rowSell(\''+key+'\')">SELL</button>'+
+        '<button class="row-btn rb-asm" onclick="event.stopPropagation();rowAsm(\''+key+'\')">ASM</button>'+
+      '</div>'+
+      '<span class="item-trend">'+trend+'</span>'+
+      profitStr+
+      '<span class="item-owned">'+(owned>0?owned:'—')+'</span>'+
+      '<span class="item-avgpaid">'+(ac>0?'\u1D9C'+fmt(ac):'—')+'</span>'+
+      '<div class="asm-cell">'+
+        (asmIn
+          ?'<div class="asm-slot-inline filled">&#10003; IN<button class="asm-remove-btn" onclick="event.stopPropagation();removeFromAsm(\''+key+'\')">&#10005;</button></div>'
+          :'<button class="asm-send-btn" onclick="event.stopPropagation();doSendAsm(\''+key+'\')">&#8594;</button>'
+        )+
+      '</div>';
+    rows.appendChild(row);
+  });
+}
+
+function selectItem(key,price){
+  GS.selectedItem=key;renderMarket();
+  const item=ITEMS.find(i=>i.key===key);
+  setStatus(item.name+' \u2014 \u1D9C'+fmt(price)+' \u2014 Double-click for full panel');
+}
+
+function renderAssembleBar(){
+  const filled=IKEYS.filter(k=>GS.assembler.slots[k]>=1).length;
+  document.getElementById('asmProgress').textContent=filled+' / 8 in assembler';
+  const hasBot=GS.robots.assembled.includes('assembler');
+  const cost=hasBot?BAL.assembleBotCost:BAL.assembleBase;
+  const btn=document.getElementById('assembleBtn');
+  btn.disabled=filled<8;btn.className='assemble-main-btn'+(filled>=8?' ready':'');
+  btn.textContent='ASSEMBLE \u2014 \u1D9C'+fmt(cost);
+}
+
+function renderRobots(){
+  const panel=document.getElementById('robotsPanel');
+  if(!GS.robots.assembled.length){panel.innerHTML='<div style="padding:12px 10px;color:var(--text-dim);font-size:13px">No bots assembled.</div>';return;}
+  const counts={};GS.robots.assembled.forEach(r=>counts[r]=(counts[r]||0)+1);
+  const rd={
+    worker:   {label:'Worker Bot',   eff:'+5 slots, seat removal',      col:'var(--col-worker)',   icon:'&#128296;'},
+    scout:    {label:'Scout Bot',    eff:'Market intel & deals',         col:'var(--col-scout)',    icon:'&#128225;'},
+    security: {label:'Security Bot', eff:'Threat defence & interception',col:'var(--col-security)', icon:'&#128737;'},
+    salvager: {label:'Salvager Bot', eff:'Scavenges parts & space',      col:'var(--col-salvager)', icon:'&#9851;'},
+    assembler:{label:'Assembler Bot',eff:'Assembly cost: '+c$(BAL.assembleBotCost),col:'var(--col-assembler)',icon:'&#9881;'},
+    gal:      {label:'GAL 9000',     eff:'Rare. Unpredictable. Perfect.',col:'var(--col-gal)',      icon:'&#9733;'},
+  };
+  let html='';
+  Object.keys(counts).forEach(role=>{
+    const d=rd[role]||{label:role,eff:'',col:'var(--green)',icon:'?'};
+    const botImgSrc=imgSrc(BOT_IMG_MAP[role]||'');
+    const isGal=role==='gal';
+    const msgId='botmsg-'+role;
+    const curMsg=botMsgs[role]||'';
+    let healthBar='';
+    if(role==='security'){
+      const hp=GS.robots.secHealth,pct=Math.round(hp/BAL.secHealthMax*100);
+      const cls=pct>60?'':'pct>30?"warn":"crit"';
+      healthBar='<div class="bot-health-bar-wrap"><div class="bot-health-label">HEALTH: '+pct+'%</div><div class="bot-health-bar"><div class="bot-health-fill" style="width:'+pct+'%"></div></div></div>'+
+                '<button class="bot-repair-btn" onclick="repairSecurityBot()">REPAIR (\u1D9C'+fmt(Math.round((BAL.secHealthMax-hp)*BAL.repairCostPer))+')</button>';
+    }
+    html+=
+      '<div class="bot-entry'+(isGal?' gal-entry':'')+'" style="'+(isGal?'margin:6px;border-color:var(--col-gal)':'')+'">'+
+        '<div class="bot-header">'+
+          (botImgSrc?'<img class="bot-img" src="'+botImgSrc+'" alt="">':'<div class="bot-icon-fb">'+d.icon+'</div>')+
+          '<div class="bot-info">'+
+            '<div class="bot-name" style="color:'+d.col+'">'+d.label+'</div>'+
+            '<div class="bot-effect">'+d.eff+'</div>'+
+          '</div>'+
+          '<div class="bot-count act" style="color:'+d.col+'">&#215;'+counts[role]+'</div>'+
+        '</div>'+
+        healthBar+
+        '<div class="bot-msg-window" id="'+msgId+'" style="display:'+(curMsg?'block':'none')+';color:'+d.col+'">'+curMsg+'</div>'+
+        (isGal
+          ?'<button class="sell-bot-btn" style="border-color:var(--col-gal);color:var(--col-gal)" onclick="sellGal()">SELL GAL 9000</button>'
+          :'<button class="sell-bot-btn" onclick="sellRobot(\''+role+'\')">'+(role==='assembler'?'SELL (\u1D9C'+fmt(assemblerBotSellPrice())+')':'SELL (\u1D9C'+fmt(BAL.robotSellBase)+')')+'</button>'
+        )+
+      '</div>';
+  });
+  panel.innerHTML=html;
+}
+
+function renderFeed(){
+  const feed=document.getElementById('eventFeed');
+  feed.innerHTML=GS.feed.slice(0,14).map(e=>
+    '<div class="feed-entry"><span class="feed-day">[D'+e.day+']</span><span class="feed-text '+e.type+'">'+e.text+'</span></div>'
+  ).join('');
+}
+
+/* ============================================================
+   BIG ITEM MODAL
+   ============================================================ */
+function openBigModal(key){
+  GS.selectedItem=key;
+  const item=ITEMS.find(i=>i.key===key);
+  const p=GS.market.prices[key]||0,av=GS.avail[key]||0;
+  const owned=GS.inventory.items[key]||0,ac=GS.inventory.avgCost[key]||0;
+  const avg=allTimeAvg(key),inAsm=GS.assembler.slots[key]||0;
+  const imgSrc2=imgSrc(ITEM_IMG_MAP[key]);
+  const maxBuy=Math.min(av,Math.max(0,slotsMax()-slotsUsed()),Math.floor(GS.player.cash/Math.max(1,p)));
+  const pc=ac>0?p-ac:0;const pcCol=pc>0?'var(--green)':pc<0?'var(--red)':'var(--text3)';
+  const mc=document.getElementById('modalContent');
+  mc.className='modal big-modal';
+  mc.innerHTML=
+    '<div class="big-deal-icon">&#129309;</div>'+
+    '<div class="modal-title">'+item.name+'</div>'+
+    '<div class="big-item-header">'+
+      (imgSrc2?'<img class="big-item-img" src="'+imgSrc2+'" alt="">':'')+
+      '<div><div class="big-item-name">'+item.name+'</div><div class="big-item-price">\u1D9C'+fmt(p)+'</div></div>'+
+    '</div>'+
+    '<div class="big-item-stats">'+
+      '<div class="big-stat"><div class="big-stat-label">AVAILABLE</div><div class="big-stat-value">'+av+'</div></div>'+
+      '<div class="big-stat"><div class="big-stat-label">YOU OWN</div><div class="big-stat-value yel">'+owned+'</div></div>'+
+      '<div class="big-stat"><div class="big-stat-label">AVG PAID</div><div class="big-stat-value">'+(ac>0?'\u1D9C'+fmt(ac):'—')+'</div></div>'+
+      '<div class="big-stat"><div class="big-stat-label">PROFIT/UNIT</div><div class="big-stat-value" style="color:'+pcCol+'">'+(ac>0?(pc>=0?'+':'')+'\u1D9C'+fmt(pc):'—')+'</div></div>'+
+      '<div class="big-stat"><div class="big-stat-label">RUN AVERAGE</div><div class="big-stat-value">'+(avg>0?'\u1D9C'+fmt(avg):'—')+'</div></div>'+
+      '<div class="big-stat"><div class="big-stat-label">IN ASSEMBLER</div><div class="big-stat-value">'+inAsm+'</div></div>'+
+    '</div>'+
+    '<div id="saleProfitDisplay"></div>'+
+    '<div class="big-qty-section">'+
+      '<div class="big-qty-label">QUANTITY</div>'+
+      '<div class="qty-row">'+
+        '<button class="qty-btn" onclick="bqAdj(-10)">&#8722;10</button>'+
+        '<button class="qty-btn" onclick="bqAdj(-1)">&#8722;</button>'+
+        '<input class="qty-input" id="bqInput" type="number" value="1" min="1" onchange="bqClamp()">'+
+        '<button class="qty-btn" onclick="bqAdj(1)">+</button>'+
+        '<button class="qty-btn" onclick="bqAdj(10)">+10</button>'+
+        '<button class="qty-max-btn" onclick="bqSet('+maxBuy+')">MAX BUY</button>'+
+        '<button class="qty-max-btn" onclick="bqSet('+owned+')">MAX SELL</button>'+
+      '</div>'+
+      '<div id="bqCost" style="margin-top:9px;font-family:var(--font-display);font-size:clamp(13px,1.4vw,17px);color:var(--yellow)">\u1D9C'+fmt(p)+' per unit</div>'+
+    '</div>'+
+    '<div class="big-action-btns">'+
+      '<button class="big-action-btn buy-btn" onclick="bmBuy(\''+key+'\')">BUY</button>'+
+      '<button class="big-action-btn sell-btn" onclick="bmSell(\''+key+'\')">SELL</button>'+
+      '<button class="big-action-btn asm-btn" onclick="bmAsm(\''+key+'\')">&#8594; ASSEMBLER</button>'+
+    '</div>'+
+    '<div style="margin-top:14px;text-align:right"><button class="modal-cancel" onclick="closeBigModal()">CLOSE</button></div>';
+  window._bmKey=key;window._bmPrice=p;window._bmMaxBuy=maxBuy;window._bmAc=ac;
+  openModal();
+}
+function closeBigModal(){closeModal();document.getElementById('modalContent').className='modal';}
+function bqAdj(d){const i=document.getElementById('bqInput');if(!i)return;let v=(parseInt(i.value)||1)+d;v=Math.max(1,v);i.value=v;bqUpdateCost();}
+function bqSet(m){const i=document.getElementById('bqInput');if(!i)return;i.value=Math.max(1,m);bqUpdateCost();}
+function bqClamp(){const i=document.getElementById('bqInput');if(!i)return;let v=parseInt(i.value)||1;if(v<1)v=1;i.value=v;bqUpdateCost();}
+function bqUpdateCost(){
+  const i=document.getElementById('bqInput'),e=document.getElementById('bqCost');if(!i||!e)return;
+  const q=parseInt(i.value)||1,p=window._bmPrice||0;
+  e.textContent='\u1D9C'+fmt(p*q)+' total';
+}
+function bmBuy(key){
+  const qty=parseInt(document.getElementById('bqInput')?.value)||1;
+  if(doBuy(key,qty)){closeBigModal();setTimeout(()=>openBigModal(key),50);}
+}
+function bmSell(key){
+  const qty=parseInt(document.getElementById('bqInput')?.value)||1;
+  if(GS.inventory.items[key]<qty){notify('Not enough owned.','error');SFX.error();return;}
+  const price=GS.market.prices[key];
+  const ac=window._bmAc||0;
+  const profit=(price-ac)*qty;
+  const rev=price*qty;
+  doSell(key,qty);
+  // Show profit
+  const d=document.getElementById('saleProfitDisplay');
+  if(d){
+    d.className='sale-profit-display '+(profit>=0?'pos':'neg');
+    d.textContent=(profit>=0?'+':'')+'\u1D9C'+fmt(profit);
+  }
+}
+function bmAsm(key){doSendAsm(key);closeBigModal();setTimeout(()=>openBigModal(key),50);}
+
+/* ============================================================
+   RIPPER MODAL
+   ============================================================ */
+function showRipperModal(lost,pct){
+  const rs=imgSrc('--img-ripper');
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="ripper-alert">&#9889; RIPPERS</div>'+
+    (rs?'<img class="ripper-img" src="'+rs+'" alt="">':'')+
+    '<div class="modal-body" style="color:var(--red2)">Hit arriving at '+GS.player.location+'.<br><br>'+
+    'They took '+pct+'% of your cash.<br>'+
+    '<span style="font-family:var(--font-display);font-size:clamp(16px,2vw,24px);color:var(--red)">-\u1D9C'+fmt(lost)+'</span><br><br>'+
+    'Banks: untouched. Inventory: untouched.</div>'+
+    '<div class="modal-btns"><button class="modal-confirm danger" onclick="closeModal()">DEAL WITH IT</button></div>';
+  openModal();
+}
+
+/* ============================================================
+   TECHNECKER MODAL
+   ============================================================ */
+function showTechNeckerModal(itemName){
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="technecker-alert">&#128270; TECHNECKERS</div>'+
+    '<div class="modal-body" style="color:var(--orange)">A TechNecker stole 1x <strong>'+itemName+'</strong> and ran off laughing.<br><br>'+
+    'Security Bot will attempt recovery next day.</div>'+
+    '<div class="modal-btns"><button class="modal-confirm" style="border-color:var(--orange);color:var(--orange)" onclick="closeModal()">NOTED</button></div>';
+  openModal();
+}
+
+/* ============================================================
+   CRAZY PRICE MODAL
+   ============================================================ */
+function showCrazyModal(item,mult,spike,cause){
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="crazy-badge">MARKET DISTORTION</div>'+
+    '<div class="modal-title" style="color:var(--purple)">'+(spike?'PRICE SURGE':'PRICE CRASH')+'</div>'+
+    '<div class="modal-body" style="color:var(--purple)"><strong>'+item.name+'</strong><br><br>'+
+    (spike?'Value multiplied x'+mult.toFixed(1):'Value reduced to '+(mult*100).toFixed(0)+'%')+
+    '<br><br>Cause: '+cause+'.<br><br>Effect is temporary and will decay over time.</div>'+
+    '<div class="modal-btns"><button class="modal-confirm" style="border-color:var(--purple);color:var(--purple)" onclick="closeModal()">UNDERSTOOD</button></div>';
+  openModal();
+}
+
+/* ============================================================
+   DISCOVERY MODAL
+   ============================================================ */
+function showDiscoveryModal(title,text,key){
+  document.getElementById('modalContent').className='modal discovery-modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="discovery-title" style="font-family:var(--font-display);font-size:clamp(13px,1.3vw,17px);color:var(--cyan2);letter-spacing:2px;margin-bottom:14px">'+title+'</div>'+
+    '<div class="modal-body">'+text+'</div>'+
+    '<div class="modal-btns"><button class="modal-confirm" style="border-color:var(--cyan2);color:var(--cyan2)" onclick="closeModal()">ACCEPT</button></div>';
+  openModal();SFX.discovery();
+}
+
+/* ============================================================
+   ROLE MODAL
+   ============================================================ */
+function showRoleModal(cost){
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="modal-title">ASSIGN ROBOT ROLE</div>'+
+    '<div class="modal-body">Assembly cost: \u1D9C'+fmt(cost)+'<br>Choose role or sell.</div>'+
+    '<div class="role-grid">'+
+      [['worker','&#128296;','WORKER BOT','+5 slots. Seat removal +2 more.'],
+       ['scout', '&#128225;','SCOUT BOT', 'Market intel & deal forecasting.'],
+       ['security','&#128737;','SECURITY BOT','Threat defence & recovery.'],
+       ['salvager','&#9851;','SALVAGER BOT','Scavenges parts. +3+3 slots.'],
+       ['assembler','&#9881;','ASSEMBLER BOT','Assembly cost \u1D9C'+fmt(BAL.assembleBotCost)+'.']
+      ].map(([role,icon,name,desc])=>
+        '<div class="role-card" onclick="doAssemble(\''+role+'\','+cost+');closeModal()">'+
+          '<div class="role-icon">'+icon+'</div>'+
+          '<div class="role-name">'+name+'</div>'+
+          '<div class="role-desc">'+desc+'</div>'+
+        '</div>'
+      ).join('')+
+      '<div class="role-card" onclick="sellRobotDirect('+BAL.robotSellBase+');closeModal()">'+
+        '<div class="role-icon">&#128176;</div>'+
+        '<div class="role-name">SELL IT</div>'+
+        '<div class="role-desc">\u1D9C'+fmt(BAL.robotSellBase)+' immediate payout.</div>'+
+      '</div>'+
+    '</div>'+
+    '<button class="modal-cancel" onclick="closeModal()">CANCEL</button>';
+  openModal();
+}
+
+function openModal(){document.getElementById('modalOverlay').classList.add('show');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
+document.getElementById('modalOverlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modalOverlay')){closeModal();document.getElementById('modalContent').className='modal';}
+});
+
+/* ============================================================
+   NOTIFY
+   ============================================================ */
+function notify(msg,type='info'){
+  const el=document.getElementById('notification');
+  el.textContent=msg;el.className='show'+(type!=='info'?' '+type:'');
+  clearTimeout(window._nt);window._nt=setTimeout(()=>{el.className='';},2600);
+}
+
+/* ============================================================
+   LOCATION BG
+   ============================================================ */
+function updateLocBg(){
+  const loc=GS.player.location,cssVar=LOC_BG_MAP[loc];
+  const src=imgSrc(cssVar);
+  document.getElementById('locBg').style.backgroundImage=src?"url('"+src+"')":'none';
+}
+
+/* ============================================================
+   SAVE / LOAD — 3 independent slots
+   ============================================================ */
+function saveGameState(silent=false){
+  try{localStorage.setItem(saveKey(currentMode),JSON.stringify({GS:JSON.parse(JSON.stringify(GS)),mode:currentMode}));}catch(e){}
+  if(!silent){const t=document.getElementById('saveToast');t.classList.add('show');SFX.save();setTimeout(()=>t.classList.remove('show'),1600);}
+  updateMenuBtns();
+}
+
+function loadGameState(mode){
+  const data=localStorage.getItem(saveKey(mode));if(!data)return false;
+  try{
+    const save=JSON.parse(data);GS=save.GS;currentMode=save.mode||mode;
+    if(!GS.meta.version)GS.meta.version=2;
+    if(!GS.events)GS.events={mods:[],holdOffers:{},dailyProfit:0,dailyLoss:0,totalProfit:0,totalLoss:0,techAdapt:0,ripperAdapt:0,cashStolenTotal:0};
+    if(!GS.banks)GS.banks={nexus:0,fomo:0};
+    if(!GS.robots.secHealth)GS.robots.secHealth=BAL.secHealthMax;
+    if(!GS.robots.assemblerSellCount)GS.robots.assemblerSellCount=0;
+    if(!GS.robots.galUnlocked)GS.robots.galUnlocked=false;
+    if(!GS.robots.galOwned)GS.robots.galOwned=false;
+    if(!GS.robots.galEarnedSinceLastTrigger)GS.robots.galEarnedSinceLastTrigger=0;
+    if(!GS.market.crazyMults)GS.market.crazyMults=mk0();
+    IKEYS.forEach(k=>{
+      if(!GS.market.avgSold[k])GS.market.avgSold[k]=0;
+      if(!GS.assembler.slots[k])GS.assembler.slots[k]=0;
+      if(!GS.market.history[k])GS.market.history[k]=[];
+      if(!GS.market.allTime[k])GS.market.allTime[k]=[];
+      if(GS.market.crazyMults[k]===undefined)GS.market.crazyMults[k]=1.0;
+    });
+    return true;
+  }catch(e){console.error(e);return false;}
+}
+
+function promptLoad(){
+  const modes=[{m:30,label:'30 Day'},{m:60,label:'60 Day'},{m:0,label:'Endless'}];
+  const available=modes.filter(x=>!!localStorage.getItem(saveKey(x.m)));
+  if(!available.length){notify('No save files found.','warn');return;}
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="modal-title">LOAD GAME</div>'+
+    '<div class="modal-body">Select save file to load:</div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">'+
+      available.map(x=>'<button class="modal-confirm" onclick="confirmLoad('+x.m+')">Load '+x.label+' Save</button>').join('')+
+    '</div>'+
+    '<button class="modal-cancel" onclick="closeModal()">CANCEL</button>';
+  openModal();
+}
+function confirmLoad(mode){closeModal();if(loadGameState(mode)){showGameScreen();renderAll();updateLocBg();notify('Save loaded.');}else notify('Load failed.','error');}
+
+function showContinueSelect(){
+  const modes=[{m:30,label:'30 Day'},{m:60,label:'60 Day'},{m:0,label:'Endless'}];
+  const available=modes.filter(x=>!!localStorage.getItem(saveKey(x.m)));
+  if(!available.length){notify('No saves found.','warn');return;}
+  if(available.length===1){confirmLoad(available[0].m);return;}
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="modal-title">CONTINUE WHICH GAME?</div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">'+
+      available.map(x=>'<button class="modal-confirm" onclick="confirmLoad('+x.m+')">Continue '+x.label+'</button>').join('')+
+    '</div>'+
+    '<button class="modal-cancel" onclick="closeModal()">CANCEL</button>';
+  openModal();
+}
+function showDeleteSelect(){
+  const modes=[{m:30,label:'30 Day'},{m:60,label:'60 Day'},{m:0,label:'Endless'}];
+  const available=modes.filter(x=>!!localStorage.getItem(saveKey(x.m)));
+  if(!available.length){notify('No saves to delete.','warn');return;}
+  document.getElementById('modalContent').className='modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="modal-title">DELETE WHICH SAVE?</div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">'+
+      available.map(x=>'<button class="modal-confirm danger" onclick="confirmDelete('+x.m+')">Delete '+x.label+' Save</button>').join('')+
+    '</div>'+
+    '<button class="modal-cancel" onclick="closeModal()">CANCEL</button>';
+  openModal();
+}
+function confirmDelete(mode){
+  if(!confirm('Delete this save? Cannot be undone.'))return;
+  localStorage.removeItem(saveKey(mode));closeModal();updateMenuBtns();notify('Save deleted.');
+}
+
+function updateMenuBtns(){
+  const any=[30,60,0].some(m=>!!localStorage.getItem(saveKey(m)));
+  document.getElementById('continueBtn').disabled=!any;
+  document.getElementById('deleteBtn').disabled=!any;
+  const pill30 =document.getElementById('pill30');
+  const pill60 =document.getElementById('pill60');
+  const pillEnd=document.getElementById('pillEnd');
+  if(pill30) pill30.className='save-slot-pill'+(localStorage.getItem(saveKey(30)) ?' has-save':'');
+  if(pill60) pill60.className='save-slot-pill'+(localStorage.getItem(saveKey(60)) ?' has-save':'');
+  if(pillEnd)pillEnd.className='save-slot-pill'+(localStorage.getItem(saveKey(0))  ?' has-save':'');
+  // Update mode select notes
+  const n30=document.getElementById('saveNote30');const n60=document.getElementById('saveNote60');const nEnd=document.getElementById('saveNoteEnd');
+  if(n30)n30.textContent=localStorage.getItem(saveKey(30))?'SAVE EXISTS — will overwrite':'';
+  if(n60)n60.textContent=localStorage.getItem(saveKey(60))?'SAVE EXISTS — will overwrite':'';
+  if(nEnd)nEnd.textContent=localStorage.getItem(saveKey(0))?'SAVE EXISTS — will overwrite':'';
+}
+
+/* ============================================================
+   GRADE SYSTEM
+   ============================================================ */
+function calcGrade(){
+  const total=GS.player.cash+totalBank();
+  const loss=GS.events.totalLoss||0;
+  const robots=GS.robots.assembled.length;
+  const days=GS.meta.day;
+  const score=total/Math.max(1,days)*10 - loss/1000 + robots*5000;
+  if(score>500000)return'A+';
+  if(score>300000)return'A';
+  if(score>200000)return'A-';
+  if(score>140000)return'B+';
+  if(score>90000) return'B';
+  if(score>60000) return'B-';
+  if(score>40000) return'C+';
+  if(score>25000) return'C';
+  if(score>15000) return'C-';
+  if(score>8000)  return'D+';
+  if(score>4000)  return'D';
+  if(score>1000)  return'D-';
+  return'F';
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+function showMainMenu(){
+  ['mainMenu','modeSelect','gameScreen','endScreen'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('mainMenu').style.display='flex';
+  updateMenuBtns();
+}
+function showModeSelect(){document.getElementById('mainMenu').style.display='none';document.getElementById('modeSelect').style.display='flex';updateMenuBtns();}
+function showGameScreen(){['mainMenu','modeSelect','endScreen'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('gameScreen').style.display='flex';}
+function startGame(mode){
+  if(localStorage.getItem(saveKey(mode))&&!confirm('This will overwrite your '+( mode===0?'Endless':mode+' Day')+' save. Continue?'))return;
+  initGS(mode);showGameScreen();renderAll();updateLocBg();
+}
+function endGame(){
+  const cash=GS.player.cash,bank=totalBank(),total=cash+bank;
+  const label=GS.meta.gameMode==='endless'?'ENDLESS MODE':GS.meta.gameMode==='30day'?'30 DAY RUN':'60 DAY RUN';
+  const grade=calcGrade();
+  document.getElementById('endSub').textContent=label+' COMPLETE';
+  document.getElementById('endGrade').textContent=grade;
+  document.getElementById('endGrade').style.color=grade.startsWith('A')?'var(--green)':grade.startsWith('B')?'var(--yellow)':grade.startsWith('C')?'var(--orange)':'var(--red)';
+  document.getElementById('endStats').innerHTML=
+    '<div class="end-stat"><span class="end-stat-label">Days Survived</span><span class="end-stat-value">'+GS.meta.day+'</span></div>'+
+    '<div class="end-stat"><span class="end-stat-label">Cash on Hand</span><span class="end-stat-value">\u1D9C'+fmt(cash)+'</span></div>'+
+    '<div class="end-stat"><span class="end-stat-label">Bank Total</span><span class="end-stat-value">\u1D9C'+fmt(bank)+'</span></div>'+
+    '<div class="end-stat"><span class="end-stat-label">Total CHiP$</span><span class="end-stat-value">\u1D9C'+fmt(total)+'</span></div>'+
+    '<div class="end-stat"><span class="end-stat-label">Cash Stolen</span><span class="end-stat-value" style="color:var(--red)">\u1D9C'+fmt(GS.events.cashStolenTotal||0)+'</span></div>'+
+    '<div class="end-stat"><span class="end-stat-label">Robots Built</span><span class="end-stat-value">'+GS.robots.assembled.length+'</span></div>'+
+    '<div class="end-stat total"><span class="end-stat-label">FINAL SCORE</span><span class="end-stat-value">\u1D9C'+fmt(total)+'</span></div>';
+  // Endless: show continue button
+  if(GS.meta.gameMode==='endless'){
+    document.getElementById('endBtn').textContent='CONTINUE';
+    document.getElementById('endBtn').onclick=()=>{showGameScreen();renderAll();};
+    document.getElementById('endSub').textContent='30-DAY CHECKPOINT';
+  }else{
+    document.getElementById('endBtn').textContent='MAIN MENU';
+    document.getElementById('endBtn').onclick=showMainMenu;
+    localStorage.removeItem(saveKey(currentMode));
+  }
+  document.getElementById('gameScreen').style.display='none';
+  document.getElementById('endScreen').style.display='flex';
+  updateMenuBtns();
+}
+
+/* ============================================================
+   KEYS
+   ============================================================ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='F8'){e.preventDefault();saveGameState();}
+  if(e.key==='F9'){e.preventDefault();promptLoad();}
+  if(e.key==='Escape'){closeModal();document.getElementById('modalContent').className='modal';}
+});
+
+updateMenuBtns();
+</script>
+</body>
+</html>
