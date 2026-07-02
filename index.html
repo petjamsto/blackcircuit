@@ -1781,7 +1781,7 @@ function travelTo(loc){
     GS.robots.galEarnedSinceLastTrigger=(GS.robots.galEarnedSinceLastTrigger||0);
     checkGalUnlock();
   }
-  GS.selectedItem=null;renderAll();saveGameState(true);updateLocBg();
+  GS.selectedItem=null;renderAll();updateLocBg();
 }
 
 /* ============================================================
@@ -2003,7 +2003,7 @@ function renderMarket(){
     const ave=allTimeAvg(key);
     const trend=getTrend(key);
     const ppu=profitPerUnit(key);
-    const profitStr=ppu===null?'<span style="color:var(--text-dim)">â€”</span>':(ppu>=0?'<span class="item-profit pos">+\u1D9C'+fmt(ppu)+'</span>':'<span class="item-profit neg">-\u1D9C'+fmt(Math.abs(ppu))+'</span>');
+    const profitStr=ppu===null?'<span style="color:var(--text-dim)">-</span>':(ppu>=0?'<span class="item-profit pos">+\u1D9C'+fmt(ppu)+'</span>':'<span class="item-profit neg">-\u1D9C'+fmt(Math.abs(ppu))+'</span>');
     const isSel=GS.selectedItem===key;
     const imgSrc2=imgSrc(ITEM_IMG_MAP[key]);
     const asmIn=GS.assembler.slots[key]>=1;
@@ -2047,11 +2047,11 @@ function renderMarket(){
       '</div>'+
       '<span class="item-avail">'+av+'</span>'+
       '<span class="item-price">\u1D9C'+fmt(p)+'</span>'+
-      '<span class="item-avgprice" style="color:#7fd8ff;font-size:clamp(10px,1vw,14px)">'+(ave>0?'\u1D9C'+fmt(ave):'â€”')+'</span>'+
+      '<span class="item-avgprice" style="color:#7fd8ff;font-size:clamp(10px,1vw,14px)">'+(ave>0?'\u1D9C'+fmt(ave):'-')+'</span>'+
       '<span class="row-btns-placeholder"></span>'+
       '<span class="item-trend">'+trend+'</span>'+
       profitStr+
-      '<span class="item-owned">'+(owned>0?owned:'â€”')+'</span>'+
+      '<span class="item-owned">'+(owned>0?owned:'-')+'</span>'+
       '<span class="item-avgpaid">'+(ac>0?'\u1D9C'+fmt(ac):'â€”')+'</span>'+
       '<div class="asm-cell">'+asmCellHtml+'</div>';
 
