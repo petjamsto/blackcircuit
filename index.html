@@ -463,6 +463,12 @@ body::after {
 .feed-text.bad    { color: var(--red); }
 .feed-text.flavor { color: var(--text3); }
 .feed-text.system { color: var(--text2); }
+.feed-text.bot-worker { color: var(--col-worker); }
+.feed-text.bot-scout { color: var(--col-scout); }
+.feed-text.bot-security { color: var(--col-security); }
+.feed-text.bot-salvager { color: var(--col-salvager); }
+.feed-text.bot-assembler { color: var(--col-assembler); }
+.feed-text.bot-gal { color: var(--col-gal); }
 .feed-text.daily  { color: var(--red); font-weight: bold; }
 .feed-text.scout  { color: var(--col-scout); }
 .feed-text.security-msg { color: var(--col-security); }
@@ -876,7 +882,7 @@ body::after {
   <button class="menu-btn" onclick="showModeSelect()">NEW GAME</button>
   <button class="menu-btn" id="continueBtn" disabled onclick="showContinueSelect()">CONTINUE</button>
   <button class="menu-btn" id="deleteBtn"   disabled onclick="showDeleteSelect()">DELETE SAVE</button>
-  <button class="menu-btn" onclick="if(confirm('Exit?'))window.close()">EXIT</button>
+  <button class="menu-btn" onclick="_confirmDialog('Exit BlackCircuit?', ()=>window.close())">EXIT</button>
   <div class="menu-version">BlackCircuit PJS 2026</div>
 </div>
 
@@ -1401,9 +1407,9 @@ function rollEvents(){
   // Flavor
   if(rng.bool(0.3))addFeed(rng.pick(FLAVOR),'flavor');
   // Found part
-  if(rng.bool(0.12)){
-    const item=rng.pick(ITEMS);
-    if(slotsMax()-slotsUsed()>0){
+  if(rng.bool(0.12)&&GS.robots.active.salvager>0){
+const item=rng.pick(ITEMS);
+if(slotsMax()-slotsUsed()>0){
       GS.inventory.items[item.key]++;
       showDiscoveryModal('SALVAGER BOT DISCOVERY',rng.pick(FOUND_PARTS).replace('{item}',item.name),item.key);
       SFX.discovery();
@@ -1471,7 +1477,7 @@ function setBotMsg(bot,msg){
   if(el){el.textContent='';el.style.display='none';}
   if(msg){
     const label=BOT_LABELS && BOT_LABELS[bot] ? BOT_LABELS[bot] : bot.toUpperCase();
-    addFeed('['+label+'] '+msg,'system');}
+    addFeed('['+label+'] '+msg,'bot-'+bot);}
 }
 
 
@@ -1958,8 +1964,7 @@ function bankWithdrawAll(b){
    FEED
    ============================================================ */
 function addFeed(text,type){
-  // Filter useless messages
-  if(type==='system'||type==='flavor'&&text.length<10)return;
+  if(type==='flavor'&&text.length<10)return;
   GS.feed.unshift({day:GS.meta.day,text,type});
   if(GS.feed.length>40)GS.feed.pop();
   renderFeed();
@@ -2122,7 +2127,7 @@ function renderRobots(){
           '<div class="bot-count act" style="color:'+d.col+'">&#215;'+counts[role]+'</div>'+
         '</div>'+
         healthBar+
-        '<div class="bot-msg-window" id="'+msgId+'" style="display:'+(curMsg?'block':'none')+';color:'+d.col+'">'+curMsg+'</div>'+
+        '<div class="bot-msg-window" id="'+msgId+'" style="display:none;color:'+d.col+'"></div>'+
         (isGal
           ?'<button class="sell-bot-btn" style="border-color:var(--col-gal);color:var(--col-gal)" onclick="sellGal()">SELL GAL 9000</button>'
           :'<button class="sell-bot-btn" onclick="sellRobot(\''+role+'\')">'+(role==='assembler'?'SELL (\u1D9C'+fmt(assemblerBotSellPrice())+')':'SELL (\u1D9C'+fmt(BAL.robotSellBase)+')')+'</button>'
@@ -2436,6 +2441,7 @@ function loadGameState(mode){
       if(!GS.market.allTime[k])GS.market.allTime[k]=[];
       if(GS.market.crazyMults[k]===undefined)GS.market.crazyMults[k]=1.0;
     });
+    Object.keys(botMsgs).forEach(k=>botMsgs[k]='');
     return true;
   }catch(e){console.error(e);return false;}
 }
