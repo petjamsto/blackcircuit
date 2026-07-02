@@ -2052,7 +2052,7 @@ function renderMarket(){
       '<span class="item-trend">'+trend+'</span>'+
       profitStr+
       '<span class="item-owned">'+(owned>0?owned:'-')+'</span>'+
-      '<span class="item-avgpaid">'+(ac>0?'\u1D9C'+fmt(ac):'â€”')+'</span>'+
+      '<span class="item-avgpaid">'+(ac>0?'\u1D9C'+fmt(ac):'-')+'</span>'+
       '<div class="asm-cell">'+asmCellHtml+'</div>';
 
     // Replace placeholder with real button div (avoids innerHTML event loss)
